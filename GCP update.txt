@@ -1,1 +1,1 @@
-I am working on how to create GCP, and clone it to the Github account.
+Sprint0: I am working on how to create GCP, and clone it to the Github account. Besides that, I have assigned everyone's access to the GCP of Ping-Pong King.
