@@ -7,7 +7,7 @@ def get_all_players():
     global input_players
     if len(input_players) == 0:
         # Normal path
-        players: Dict[Player] = {
+        players: Dict = {
             "1": "Lingwen Kong",
             "2": "Deepti Argawal",
             "3": "Dekun Chen",
