@@ -19,7 +19,6 @@ def players():
 @app.route('/api/predictions', methods=['GET'])
 def predictions():
     return_data = "Not yet implemented"
-    prediction = None
     first_player = None
     second_player = None
     query_parameters = request.args
