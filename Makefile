@@ -9,6 +9,7 @@ test:
 
 lint:
 	#pylint --disable=R,C pingponglib cli web
+	export PYTHONPATH=src
 	pylint --disable=R,C main.py
 
 all: install lint test
