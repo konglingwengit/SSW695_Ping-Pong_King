@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\app",
-    "\\app\\players"
+    "\\environments"
   ],
-  "SelectedNode": "\\app\\players\\players.component.ts",
+  "SelectedNode": "\\environments\\environment.prod.ts",
   "PreviewInSolutionExplorer": false
 }

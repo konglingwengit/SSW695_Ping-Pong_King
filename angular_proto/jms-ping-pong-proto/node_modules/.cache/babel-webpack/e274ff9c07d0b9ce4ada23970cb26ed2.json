@@ -1,0 +1,1 @@
+{"ast":null,"code":"export * from './backend.service';\nexport * from './http-status-codes';\nexport * from './http-client-backend.service';\nexport * from './in-memory-web-api.module';\nexport * from './http-client-in-memory-web-api.module';\nexport * from './interfaces'; //# sourceMappingURL=index.js.map","map":null,"metadata":{},"sourceType":"module"}

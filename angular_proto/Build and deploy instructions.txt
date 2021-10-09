@@ -1,0 +1,16 @@
+Current process to build Angular code and push it to GCP is as follows:
+1. Build the Angular code from the Angular project directory (angular_proto/jms-ping-pong-proto in this case)
+- - The command is "ng build"
+- - Note that angular.json has been updated to build to the "dist" directory instead of "dist/project_name" to keep the integration process simpler.
+
+2. Copy the dist directory into the nginx-hosting directory (from angular_proto/jms-ping-pong-proto/dist to angular_proto/jms-ping-pong-proto/nginx-hosting/dist in this case)
+
+3. From the nginx-hosting directory, run "gcloud builds submit"
+
+4. From the nginx-hosting directory, run "gcloud app deploy --image-url us.gcr.io/angular-deployment-328516/angular-nginx-container"
+- - Replace angular-deployment-328516 with the correct project name.
+
+Potential changes for deployment to the actual Ping Pong King website (other than functional changes):
+- app.yaml
+- - Update service, if desired.  Potentially we want this service to be default and the back end to have a different service name.
+- - Update API_URL if the main Ping Pong King website address changes.  

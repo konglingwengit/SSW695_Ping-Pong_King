@@ -1,0 +1,7 @@
+runtime: custom
+env: flex
+service: angular-ui-dev
+threadsafe: true
+
+env_variables:
+  API_URL: "https://ping-pong-king-666.uc.r.appspot.com/api"
