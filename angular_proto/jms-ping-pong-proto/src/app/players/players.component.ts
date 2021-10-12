@@ -10,7 +10,7 @@ import { PlayerService } from '../player.service';
 })
 export class PlayersComponent implements OnInit {
 
-  players: Player[] = [];
+  players: any = [];
   statistic: Statistic = {winner_id: 0, winner_probability: 0};
   firstInput: number = 0;
   secondInput: number = 0;

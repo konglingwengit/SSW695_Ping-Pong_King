@@ -2,5 +2,5 @@
       window["envconfig"] = window["envconfig"] || {};
 
       // Environment variables
-      window["envconfig"]["apiurl"] = "http://localhost:8080/api";
+      window["envconfig"]["apiurl"] = "https://ping-pong-king-666.uc.r.appspot.com/api";
 })(this);
