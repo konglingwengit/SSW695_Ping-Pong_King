@@ -1,4 +1,8 @@
 <h2>Choose two players</h2>
+Some text<br>
+{{players[0].name}}
+{{players[0].id}}
+Some more text<br>
 <select name="first" id="first" [(ngModel)]="firstInput">
   <option value="{{player.id}}" *ngFor="let player of players">
     {{player.name}}
@@ -16,5 +20,5 @@
 <div *ngIf="statistic.winner_id > 0">
 <br>
 <br>
-The winner is {{statistic.winner_probability * 100}} percent likely to be {{getPlayerName(statistic.winner_id)}}
+The winner is {{statistic.win_chance * 100}} percent likely to be {{getPlayerName(statistic.winner_id)}}
 </div>

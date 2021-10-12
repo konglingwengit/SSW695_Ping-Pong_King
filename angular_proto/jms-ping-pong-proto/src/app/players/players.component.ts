@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Player } from '../player';
-import { Statistic } from '../statistic';
 import { PlayerService } from '../player.service';
 
 @Component({
@@ -10,8 +8,8 @@ import { PlayerService } from '../player.service';
 })
 export class PlayersComponent implements OnInit {
 
-  players: any = [];
-  statistic: Statistic = {winner_id: 0, winner_probability: 0};
+  players: any = [{id: 1, name: "Fred"}];
+  statistic: any = {winner_id: 0, winner_probability: 0};
   firstInput: number = 0;
   secondInput: number = 0;
 
@@ -24,7 +22,7 @@ export class PlayersComponent implements OnInit {
   }
 
   getStatistics(): void {
-    this.playerService.getStatistics(this.firstInput, this.secondInput)
+    this.playerService.getStatistics(this.firstInput, this.secondInput, "WINNER")
         .subscribe(statistic => this.statistic = statistic);
   }
 
