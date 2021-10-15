@@ -1,0 +1,22 @@
+@Injectable({
+  providedIn: 'root'
+})
+export class HttpRequestService {
+
+  constructor(protected http: HttpClient) { }
+
+ // public getAllProducts() {
+//    return this.http.get('assets/products.csv', { responseType: 'text' })
+ // }
+
+  public get_details(sku: string) {
+    console.log(`dwefa`);
+    return this.http.get(
+      `https://storage.googleapis.com/carousel-resources-public/psychobunny/${sku}.json`, {responseType: 'json'}
+      );
+  }
+
+  public read_mapping_file(path: string) {
+    return this.http.get(path, {responseType: 'text'});
+  }
+}
