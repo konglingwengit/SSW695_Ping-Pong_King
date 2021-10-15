@@ -1,10 +1,12 @@
-<!doctype html>
-<html lang="en">
-    <head>
+<!DOCTYPE html><html lang="en"><head><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 
         <!-- meta data & title -->
+        <base href="/pingpong/">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+
         <meta charset="utf-8">
-        <title>Ping Pong King</title>
+        <title>PingPongKing</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -13,200 +15,48 @@
 
 
         <!-- CSS -->
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300">
-        <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
-        <link href="http://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css">
-        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-        <link rel="stylesheet" href="assets/css/animate.min.css">
-        <link rel="stylesheet" href="assets/css/style.css">
-        
-    </head>
-  <body>
+        <style type="text/css">@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSKmu0SC55K5gw.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSumu0SC55K5gw.woff2) format('woff2');unicode-range:U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSOmu0SC55K5gw.woff2) format('woff2');unicode-range:U+1F00-1FFF;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSymu0SC55K5gw.woff2) format('woff2');unicode-range:U+0370-03FF;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS2mu0SC55K5gw.woff2) format('woff2');unicode-range:U+0590-05FF, U+20AA, U+25CC, U+FB1D-FB4F;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSCmu0SC55K5gw.woff2) format('woff2');unicode-range:U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSGmu0SC55K5gw.woff2) format('woff2');unicode-range:U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSKmu0SC55K5gw.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSumu0SC55K5gw.woff2) format('woff2');unicode-range:U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSOmu0SC55K5gw.woff2) format('woff2');unicode-range:U+1F00-1FFF;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSymu0SC55K5gw.woff2) format('woff2');unicode-range:U+0370-03FF;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS2mu0SC55K5gw.woff2) format('woff2');unicode-range:U+0590-05FF, U+20AA, U+25CC, U+FB1D-FB4F;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSCmu0SC55K5gw.woff2) format('woff2');unicode-range:U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSGmu0SC55K5gw.woff2) format('woff2');unicode-range:U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;}@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-stretch:100%;src:url(https://fonts.gstatic.com/s/opensans/v26/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}</style>
+        <style type="text/css">@font-face{font-family:'PT Sans';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/ptsans/v12/jizaRExUiTo99u79D0-ExcOPIDUg-g.woff2) format('woff2');unicode-range:U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;}@font-face{font-family:'PT Sans';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/ptsans/v12/jizaRExUiTo99u79D0aExcOPIDUg-g.woff2) format('woff2');unicode-range:U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;}@font-face{font-family:'PT Sans';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/ptsans/v12/jizaRExUiTo99u79D0yExcOPIDUg-g.woff2) format('woff2');unicode-range:U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;}@font-face{font-family:'PT Sans';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/ptsans/v12/jizaRExUiTo99u79D0KExcOPIDU.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}</style>
+        <style type="text/css">@font-face{font-family:'Raleway';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/raleway/v22/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCFPrcVIT9d0c-dYA.woff) format('woff');unicode-range:U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;}@font-face{font-family:'Raleway';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/raleway/v22/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCMPrcVIT9d0c-dYA.woff) format('woff');unicode-range:U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;}@font-face{font-family:'Raleway';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/raleway/v22/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCHPrcVIT9d0c-dYA.woff) format('woff');unicode-range:U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;}@font-face{font-family:'Raleway';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/raleway/v22/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCGPrcVIT9d0c-dYA.woff) format('woff');unicode-range:U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;}@font-face{font-family:'Raleway';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/raleway/v22/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCIPrcVIT9d0c8.woff) format('woff');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}</style>
+        <link rel="stylesheet" href="oldassets/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="oldassets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="oldassets/css/animate.min.css">
+        <link rel="stylesheet" href="oldassets/css/style.css">
 
+    <link rel="stylesheet" href="styles.31d6cfe0d16ae931b73c.css"></head>
+  <body>
     <!-- Header -->
-        
+
     <nav id="navbar-section" class="navbar navbar-default navbar-static-top navbar-sticky" role="navigation">
-        <div class="container">
-        
-            <div id="navbar-spy" class="collapse navbar-collapse navbar-responsive-collapse">
-                <ul class="nav navbar-nav pull-right">
-                    <li class="active">
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li>
-                        <a href="login.html">Login</a>
-                    </li>
-                    <li>
-                        <a href="predict.html"><span>Predict</span></a>
-                    </li>
-                </ul>         
-            </div>
-        </div>
+      <div class="container">
+
+          <div id="navbar-spy" class="collapse navbar-collapse navbar-responsive-collapse">
+              <ul class="nav navbar-nav pull-left">Welcome to Ping Pong King</ul>
+              <ul class="nav navbar-nav pull-right">
+                  <li class="active">
+                      <a href="index.html">Home</a>
+                  </li>
+                  <li>
+                      <a href="login.html">Login</a>
+                  </li>
+                  <li>
+                      <a href="predict.html"><span>Predict</span></a>
+                  </li>
+              </ul>
+          </div>
+      </div>
     </nav>
 
     <!-- End Header -->
 
+  <app-root></app-root>
 
-    <!-- Begin #carousel-section -->
-    <section id="carousel-section" class="section-global-wrapper"> 
-        <div class="container-fluid-kamn">
-            <div class="row">
-                <div id="carousel-1" class="carousel slide" data-ride="carousel">
-
-                    <!-- Indicators -->
-                    <ol class="carousel-indicators visible-lg">
-                        <li data-target="#carousel-1" data-slide-to="0" class="active"></li>
-                        <li data-target="#carousel-1" data-slide-to="1"></li>
-                        <li data-target="#carousel-1" data-slide-to="2"></li>
-                    </ol>
-        
-                    <!-- Wrapper for slides -->
-                    <div class="carousel-inner" role="listbox">
-                        <!-- Begin Slide 1 -->
-                        <div class="item active">
-                            <img src="assets/img/slider/slide01.jpg" height="400" alt="Image of first carousel">
-                            <div class="carousel-caption">
-                                <h3 class="carousel-title hidden-xs"></h3>
-                                <p class="carousel-body"></p>
-                            </div>
-                        </div>
-                        <!-- End Slide 1 -->
-
-                        <!-- Begin Slide 2 -->
-                        <div class="item">
-                            <img src="assets/img/slider/slide02.jpg" height="400" alt="Image of second carousel">
-                            <div class="carousel-caption">
-                                <h3 class="carousel-title hidden-xs"></h3>
-                                <p class="carousel-body"></p>
-                            </div>
-                        </div>
-                        <!-- End Slide 2 -->
-
-                        <!-- Begin Slide 3 -->
-                        <div class="item">
-                            <img src="assets/img/slider/slide03.jpg" height="400" alt="Image of third carousel">
-                            <div class="carousel-caption">
-                                <h3 class="carousel-title hidden-xs"></h3>
-                                <p class="carousel-body"></p>
-                            </div>
-                        </div>
-                        <!-- End Slide 3 -->
-                    </div>
-        
-                    <!-- Controls -->
-                    <a class="left carousel-control" href="#carousel-1" data-slide="prev">
-                        <span class="glyphicon glyphicon-chevron-left"></span>
-                    </a>
-                    <a class="right carousel-control" href="#carousel-1" data-slide="next">
-                        <span class="glyphicon glyphicon-chevron-right"></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End #carousel-section -->
-
-
-    <!-- Begin #services-section -->
-    <section id="services" class="services-section section-global-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="services-header">
-                    <h3 class="services-header-title">Ping Pong King</h3>
-                    <p class="services-header-body"><em> Welcome to Ping Pong King </em>  </p><hr>
-                </div>
-            </div>
-       <div id="container" class="center-justify">
-			<div class="sea-container">
-				<form action="">
-					
-                    <input type="text" onFocus="this.value=''" value="player1" name="player1">
-					<input type="text" onFocus="this.value=''" value="player2" name="player2">
-					<input type="submit" value="Predict" class="blue-button">
-				</form>
-				<p id="selectedId"></p>
-			</div>
-        
-
-
-            <!-- Begin Services Row 1 -->
-            <div class="row services-row services-row-head services-row-1">
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <div class="services-group wow animated fadeInLeft" data-wow-offset="40">
-                        <img src="assets/ico/live.png" height="60" alt="">
-                        <p class="services-body">Asianyan.Arutyun      6 11 10</p>
-                        <p class="services-body">Sanfonov.Viadimir     11 6 10</p>
-                        <p class="services-more"><a href="a.html">Find Out More</a></p>
-                    </div>
-                </div>
-        
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    
-                    <div class="services-group wow animated zoomIn" data-wow-offset="40">
-                        
-                        <h4 class="services-title">Moneyline</h4>
-                        <p class="services-body">Asianyan.Arutyun      -105</p>
-                        <p class="services-body">Sanfonov.Viadimir     -135</p>
-                        <p class="services-more"><a href="b.html">Find Out More</a></p>
-                    </div>
-                </div>
-        
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <div class="services-group wow animated fadeInRight" data-wow-offset="40">
-                        
-                        <h4 class="services-title">Total points</h4>
-                        <p class="services-body">Asianyan.Arutyun      1</p>
-                        <p class="services-body">Sanfonov.Viadimir     1</p>
-                        <p class="services-more"><a href="c.html">Find Out More</a></p>
-                    </div>        
-                </div>
-            </div>
-            <!-- End Serivces Row 1 -->
-      
-            <!-- Begin Services Row 2 -->
-            <div class="row services-row services-row-tail services-row-2">
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <div class="services-group wow animated fadeInLeft" data-wow-offset="40">
-                         
-                        <h4 class="services-title">Exact Number of Games</h4>
-                        <p class="services-more"><a href="d.html">Find Out More</a></p>
-                    </div>
-                </div>
-        
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <div class="services-group wow animated zoomIn" data-wow-offset="40">
-                         
-                        <h4 class="services-title">3rd Game Winner</h4>
-                        <p class="services-more"><a href="e.html">Find Out More</a></p>
-                    </div>
-                </div>
-        
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <div class="services-group wow animated fadeInRight" data-wow-offset="40">
-                        
-                        <h4 class="services-title">Game Decided By Extra Points</h4>
-                        <p class="services-more"><a href="f.html">Find Out More</a></p>
-                    </div>
-                </div>
-            </div>
-            <!-- End Serivces Row 2 -->
-    
-        </div>      
-    </section>
-    <!-- End #services-section -->
-
-
-    
-    
-  
-
-    <script src="js/sreach.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/wow.min.js"></script>
+    <script type="text/javascript" src="oldassets/js/jquery-1.10.2.min.js"></script>
+    <script src="oldassets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="oldassets/js/wow.min.js"></script>
     <script>
       new WOW().init();
     </script>
-  </body>
-</html>
+  <script src="runtime.519e1ee52d9f4083a4b2.js" defer></script><script src="polyfills.c21e2b7641678349f845.js" defer></script><script src="main.597d53507fdab8b57b03.js" defer></script>
+
+</body></html>
