@@ -1,4 +1,13 @@
-steps:
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ["app", "deploy"]
-timeout: "1600s"
+#steps:
+#- name: "gcr.io/cloud-builders/gcloud"
+#  args: ["app", "deploy"]
+#timeout: "1600s"
+
+name: my-pr-trigger
+description: "Trigger on any PR targeting master"
+github:
+  owner: GoogleCloudPlatform
+  name: cloud-builders
+  push_request:
+    branch: master
+filename: cloudbuild.yaml
