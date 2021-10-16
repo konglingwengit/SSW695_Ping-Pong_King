@@ -1,4 +1,4 @@
-from backend import main
+import main
 import players
 
 
