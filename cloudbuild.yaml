@@ -14,3 +14,6 @@ steps:
   args: ['app', 'deploy', 'frontend/nginx-hosting/app.yaml'] 
 images: ['us.gcr.io/$PROJECT_ID/angular-nginx-container']
 timeout: "1600s"
+
+ options:
+ logging: CLOUD_LOGGING_ONLY
