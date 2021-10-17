@@ -16,4 +16,4 @@ images: ['us.gcr.io/$PROJECT_ID/angular-nginx-container']
 timeout: "1600s"
 
  options:
- logging: CLOUD_LOGGING_ONLY
+  logging: CLOUD_LOGGING_ONLY
