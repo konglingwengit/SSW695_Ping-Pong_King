@@ -5,7 +5,7 @@ install:
 test:
 	#python -m pytest -vv --cov=pingponglib tests/*.py
 	#python -m pytest --nbval notebook.ipynb
-
+	python -m pytest 
 
 lint:
 	#pylint --disable=R,C pingponglib cli web
