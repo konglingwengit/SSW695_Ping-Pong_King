@@ -1,4 +1,8 @@
 from typing import Dict
+from google.cloud import datastore
+
+# Instantiates a client
+datastore_client = datastore.Client()
 
 input_players: Dict = dict()
 
@@ -8,11 +12,14 @@ def get_all_players():
     if len(input_players) == 0:
         # Normal path
         players = list()
-        players.append({"id": "1", "name": "Lingwen Kong"})
-        players.append({"id": "2", "name": "Deepti Argawal"})
-        players.append({"id": "3", "name": "Dekun Chen"})
-        players.append({"id": "4", "name": "Bin Sun"})
-        players.append({"id": "5", "name": "Jonathan Sebast"})
+
+        query = datastore_client.query(kind='Player')
+        query_iter = query.fetch()
+        for entity in query_iter:
+            name = entity['name']
+            key = entity.key.id
+            players.append({"name": name, "id": key})
+
     else:
         # Used for unit testing
         players = input_players
