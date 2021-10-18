@@ -1,2 +1,5 @@
 __pycache__/
 myvenv/
+frontend/.vs/ProjectSettings.json
+frontend/.vs/slnx.sqlite
+frontend/.vs/frontend/v16/.suo
