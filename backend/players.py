@@ -31,7 +31,7 @@ def get_all_players():
 def player_exists(player_id: str):
     players = get_all_players()
     for player in players:
-        if player['id'] == player_id:
+        if player['id'] == int(player_id):
             return True
     return False
 
@@ -39,7 +39,7 @@ def player_exists(player_id: str):
 def get_player_name(player_id: str):
     players = get_all_players()
     for player in players:
-        if player['id'] == player_id:
+        if player['id'] == int(player_id):
             return player['name']
     return None
 
