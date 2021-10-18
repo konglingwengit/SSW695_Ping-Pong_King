@@ -1,9 +1,6 @@
 from typing import Dict
 from google.cloud import datastore
 
-# Instantiates a client
-datastore_client = datastore.Client()
-
 input_players: Dict = dict()
 
 
@@ -11,6 +8,10 @@ def get_all_players():
     global input_players
     if len(input_players) == 0:
         # Normal path
+
+        # Instantiates a client
+        datastore_client = datastore.Client()
+
         players = list()
 
         query = datastore_client.query(kind='Player')
