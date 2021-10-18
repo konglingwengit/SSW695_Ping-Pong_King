@@ -29,18 +29,20 @@ def get_all_players():
 
 
 def player_exists(player_id: str):
-    players = get_all_players()
-    for player in players:
-        if player['id'] == player_id:
-            return True
+    if player_id.isdigit():
+        players = get_all_players()
+        for player in players:
+            if int(player['id']) == int(player_id):
+                return True
     return False
 
 
 def get_player_name(player_id: str):
-    players = get_all_players()
-    for player in players:
-        if player['id'] == player_id:
-            return player['name']
+    if player_id.isdigit():
+        players = get_all_players()
+        for player in players:
+            if int(player['id']) == int(player_id):
+                return player['name']
     return None
 
 
