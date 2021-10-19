@@ -1,5 +1,8 @@
 Flask==1.1.4
 flake8
+requests
+bs4
+datetime
 google-cloud-datastore
 pytest
 pylint
