@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 from players import get_all_players
 from predictions import win_prediction, total_points_prediction, number_of_games_prediction
 from predictions import games_decided_by_extra_points_prediction, third_game_winner_prediction
+from scraper import scrape_data, update_player_list
 app = Flask(__name__)
+
 
 @app.route('/')
 def hello():
@@ -12,6 +14,9 @@ def hello():
 
 @app.route('/api/players', methods=['GET'])
 def players():
+    query_parameters = request.args
+    if 'update' in query_parameters:
+        update_player_list()
     response = jsonify(get_all_players())
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -40,6 +45,29 @@ def predictions():
         if prediction == "EXTRA_POINTS":
             response = games_decided_by_extra_points_prediction(first_player, second_player)
     response = jsonify(response)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+
+@app.route('/api/scrape', methods=['GET'])
+def scrape():
+    response = jsonify("Scrape not performed")
+    start_date = None
+    end_date = None
+    rank_range = None
+    query_parameters = request.args
+    if 'start' in query_parameters:
+        start_date = query_parameters.get('start')
+    if 'end' in query_parameters:
+        end_date = query_parameters.get('end')
+    if 'rank' in query_parameters:
+        rank_range = query_parameters.get('rank')
+    if start_date and end_date:
+        scrape_data(start_date, end_date, rank_range)
+        response_text = "Scrape performed from " + start_date + " to " + end_date
+        if rank_range is not None:
+            response_text = response_text + " for ranks " + rank_range
+        response = jsonify(response_text)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
