@@ -7,4 +7,4 @@ Current process to build Angular code and push it to GCP is as follows:
 
 [now automated] 3. From the nginx-hosting directory, run "gcloud builds submit"
 
-[now automated] 4. From the nginx-hosting directory, run "gcloud app deploy --image-url us.gcr.io/ping-pong-king-666/angular-nginx-container"
+[now automated] 4. From the nginx-hosting directory, run "gcloud app deploy --image-url us.gcr.io/ping-pong-king-666/angular-nginx-container" 
