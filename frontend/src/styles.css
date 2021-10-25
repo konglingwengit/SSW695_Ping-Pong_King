@@ -269,7 +269,7 @@ address {
     margin-bottom: 10px;
 }
 #banner-home{
-    background-image:url('../img/slider/1.jpg');
+    background-image:url('assets/img/slider/slide01.jpg');
     height:350px;
     margin-bottom: 30px;
     padding-top: 120px;
@@ -278,7 +278,7 @@ address {
 @media (min-width: 100px) and (max-width: 800px) {
 
     #banner-home{
-    background-image:url('../img/slider/1.jpg');
+    background-image:url('assets/img/slider/slide01.jpg');
     height:450px;
     margin-bottom: 30px;
     }
