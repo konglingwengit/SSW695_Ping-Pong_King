@@ -1,10 +1,7 @@
 Current process to build Angular code and push it to GCP is as follows:
 1. Build the Angular code from the Angular project directory (/frontend in this case)
 - - The command is "ng build"
-- - Note that angular.json has been updated to build to the "dist" directory instead of "dist/project_name" to keep the integration process simpler.
 
-2. Copy the dist directory into the nginx-hosting directory (from frontend/dist to frontend/nginx-hosting/dist in this case)
+[now automated, but this can be used to deploy from a local PC] 2. From the nginx-hosting directory, run "gcloud builds submit"
 
-[now automated] 3. From the nginx-hosting directory, run "gcloud builds submit"
-
-[now automated] 4. From the nginx-hosting directory, run "gcloud app deploy --image-url us.gcr.io/ping-pong-king-666/angular-nginx-container" 
+[now automated, but this can be used to deploy from a local PC] 3. From the nginx-hosting directory, run "gcloud app deploy --image-url us.gcr.io/ping-pong-king-666/angular-nginx-container" 
