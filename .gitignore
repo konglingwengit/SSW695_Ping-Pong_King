@@ -3,3 +3,11 @@ myvenv/
 frontend/.vs/ProjectSettings.json
 frontend/.vs/slnx.sqlite
 frontend/.vs/frontend/v16/.suo
+backend/.idea/
+backend/venv/
+backend/__pycache__/
+backend/.idea/backend.iml
+backend/.idea/inspectionProfiles/profiles_settings.xml
+backend/.idea/misc.xml
+backend/.idea/modules.xml
+backend/.idea/vcs.xml

@@ -1,25 +1,39 @@
 import json
-import pandas as pd
+from google.cloud import datastore
+
+client = None
 
 
-def Predict(A_id, B_id):
-    file = pd.read_excel('report.xlsx')
-    file = file.to_json(orient='records')
-    data = json.loads(file)
+def predict(a_id, b_id):
+    global client
+    if client is None:
+        client = datastore.Client()
+    query = client.query(kind='Event_Data')
+    query.add_filter('homeTeam', '=', a_id)
+    query.add_filter('awayTeam', '=', b_id)
+    player_a_home = list(query.fetch())
+    query = client.query(kind='Event_Data')
+    query.add_filter('homeTeam', '=', b_id)
+    query.add_filter('awayTeam', '=', a_id)
+    player_b_home = list(query.fetch())
+    all_games = player_a_home + player_b_home
 
-    A_played = 0
+    A_played = len(all_games)
     A_won = 0
-    B_played = 0
+    B_played = len(all_games)
     B_won = 0
-    for i in data:
-        if A_id in [i["Player_A_ID"], i["Player_B_ID"]]:
-            if i["who_won"] == A_id:
-                A_won += 1
-            A_played += 1
-        if B_id in [i["Player_A_ID"], i["Player_B_ID"]]:
-            if i["who_won"] == B_id:
-                B_won += 1
-            B_played += 1
+    for i in all_games:
+        if i['winnerCode'] == 1:
+            if a_id == i['homeTeam']:
+                A_won = A_won + 1
+            else:
+                B_won = B_won + 1
+        else:
+            if a_id == i['awayTeam']:
+                A_won = A_won + 1
+            else:
+                B_won = B_won + 1
+
     try:
         A_win_rate = (A_played / A_won) * 100
         B_win_rate = (B_played / B_won) * 100
@@ -30,7 +44,7 @@ def Predict(A_id, B_id):
         probability_A = 50
         probability_B = 50
 
-    print(f"Team A's({A_id}) winning chances are {probability_A}%, and B's({B_id}) chances are {probability_B}%")
+    print(f"Team A's({a_id}) winning chances are {probability_A}%, and B's({b_id}) chances are {probability_B}%")
 
 
 if __name__ == '__main__':
@@ -38,7 +52,7 @@ if __name__ == '__main__':
         teamA = input("PLease Enter 1st player ID: ")
         teamB = input("PLease Enter 2nd player ID: ")
         try:
-            Predict(int(teamA), int(teamB))
+            predict(int(teamA), int(teamB))
         except ValueError:
             print("invlaid ID's")
 

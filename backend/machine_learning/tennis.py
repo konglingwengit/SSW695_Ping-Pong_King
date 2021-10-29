@@ -3,8 +3,7 @@ import time
 import datetime
 import requests
 import json
-import pandas as pd
-from pathlib import Path
+from google.cloud import datastore
 
 head = {
     'Host': 'api.sofascore.com',
@@ -19,73 +18,79 @@ head = {
     'cache-control': 'no-cache',
 }
 
-
-def check_new_ids():
-    with open('ids.json', 'r') as file:
-        ids = json.load(file)
-        counter = 0
-    for i in range(100):
-        r = requests.get(f'https://api.sofascore.com/api/v1/unique-tournament/14770/events/last/{i}', headers=head)
-        if r.status_code != 200:
-            break
-        new = json.loads(r.text)
-        with open(f'events/1.json', 'r') as filx:
-            fx = json.load(filx)
-
-        for i in new['events']:
-            if str(i['id']) not in ids.keys():
-                fx['events'].append(i)
-                print("added new entry id: ", i['id'])
-                game_id = i['id']
-                timestamp = i['startTimestamp']
-                a_id = i['homeTeam']['id']
-                b_id = i['awayTeam']['id']
-                a_name = i['homeTeam']['name']
-                b_name = i['awayTeam']['name']
-                obj = {"GameId": game_id, "startTimestamp": timestamp,
-                       "homeTeamId": a_id, "awayTeamId": b_id,
-                       "homeTeamName": a_name, "awayTeamName": b_name
-                       }
-                ids[game_id] = obj
-                counter += 1
-        if counter <= 25:
-            break
-    with open('ids.json', 'w') as file:
-        json.dump(ids, file)
-    with open(f'events/1.json', 'w') as filx:
-        json.dump(fx, filx)
+client = None
 
 
-def fetch_ids():
-    ids = {}
+def fetch_tournament(tournament_id):
+    global client
+    if client is None:
+        client = datastore.Client()
+    event_kind = 'Event_Data'
+    player_kind = 'Player'
     i = 0
     while True:
-        r = requests.get(f'https://api.sofascore.com/api/v1/unique-tournament/14770/events/last/{i}', headers=head)
+        print('Event request')
+        r = requests.get(f'https://api.sofascore.com/api/v1/unique-tournament/{tournament_id}/events/last/{i}', headers=head)
         i += 1
-        if (r.status_code == 403):
-            print('Error 403 occured while fetching data ( IP Blocked) try VPN')
+        print(f'starting iteration {i}')
+        if r.status_code == 403:
+            print('Error 403 occurred while fetching data ( IP Blocked) try VPN')
         if r.status_code == 200:
             raw_data = json.loads(r.text)
-            s = f'events/{i}.json'
-            with open(s, 'w') as outfile:
-                json.dump(raw_data, outfile)
             for d in raw_data['events']:
-                game_id = d['id']
-                timestamp = d['startTimestamp']
-                a_id = d['homeTeam']['id']
-                b_id = d['awayTeam']['id']
-                a_name = d['homeTeam']['name']
-                b_name = d['awayTeam']['name']
-                obj = {"GameId": game_id, "startTimestamp": timestamp,
-                       "homeTeamId": a_id, "awayTeamId": b_id,
-                       "homeTeamName": a_name, "awayTeamName": b_name
-                       }
+                new_event = datastore.entity.Entity()
+                event_id = int(d['id'])
+                new_event.key = client.key(event_kind, event_id)
+
+                found = client.get(new_event.key)
+
+                #  Don't make another copy of an event we already recorded.
+                if found is None:
+                    new_event['timestamp'] = d['startTimestamp']
+                    new_event['uniqueTournament'] = d['tournament']['uniqueTournament']['id']
+                    new_event['sport'] = d['tournament']['category']['sport']
+                    new_event['homeTeam'] = d['homeTeam']['id']
+                    new_event['awayTeam'] = d['awayTeam']['id']
+                    new_event['homeScore'] = d['homeScore']
+                    new_event['awayScore'] = d['awayScore']
+                    new_event['winnerCode'] = d['winnerCode']
+
+                    req_stat = requests.get(f'https://api.sofascore.com/api/v1/event/{event_id}/statistics',
+                                            headers=head)
+                    if req_stat.status_code == 200:
+                        stat = json.loads(req_stat.text)
+                        for period in range(len(stat['statistics'])):
+                            statistic = dict()
+                            current_statistic = stat['statistics'][period]['groups'][0]['statisticsItems']
+                            for statistic_id in range(len(current_statistic)):
+                                statistic[current_statistic[statistic_id]['name']] = \
+                                    {'home': current_statistic[statistic_id]['home'],
+                                     'away': current_statistic[statistic_id]['away']}
+                            if period == 0:
+                                new_event['overall_statistics'] = statistic
+                            else:
+                                new_event[f'statistics_period{period}'] = statistic
+
+                    # This appears to be the code for completed games
+                    if d['status']['code'] == 100:
+                        client.put(new_event)
+                    new_player = datastore.entity.Entity()
+                    new_player.key = client.key(player_kind, int(d['homeTeam']['id']))
+                    found = client.get(new_player.key)
+                    if found is None:
+                        new_player['name'] = d['homeTeam']['name']
+                        client.put(new_player)
+                    new_player = datastore.entity.Entity()
+                    new_player.key = client.key(player_kind, int(d['awayTeam']['id']))
+                    found = client.get(new_player.key)
+                    if found is None:
+                        new_player['name'] = d['awayTeam']['name']
+                        client.put(new_player)
+            if not raw_data['hasNextPage']:
+                break
             time.sleep(5)
         else:
             break
-
-    with open('ids.json', 'w') as outfile:
-        json.dump(ids, outfile)
 
 
 def fetch_statistics(game_id, time, a_id, b_id, a_name, b_name):
@@ -168,18 +173,6 @@ def fetch_statistics(game_id, time, a_id, b_id, a_name, b_name):
     return obj
 
 
-def create_excel():
-    data_arr = []
-    with open('ids.json', 'r') as file:
-        data = json.load(file)
-    for i in data.keys():
-        x = fetch_statistics(data[i]["GameId"], data[i]["startTimestamp"], data[i]["homeTeamId"], data[i]["awayTeamId"],
-                             data[i]["homeTeamName"], data[i]["awayTeamName"])
-        data_arr.append(x)
-    dateframe = pd.DataFrame(data_arr)
-    dateframe.to_excel('report.xlsx')
-
-
 def fetch_ids_from_file():
     ids = {}
     files = len([name for name in os.listdir('./events')])
@@ -213,31 +206,5 @@ def fetch_ids_from_file():
     check_new_ids()
 
 
-ids = {}
-
-
-def start_tennis():
-    global ids
-
-    Path("./events").mkdir(parents=True, exist_ok=True)
-    Path("./statistics").mkdir(parents=True, exist_ok=True)
-
-    try:
-        with open(f'statistics/Teams.json', 'r') as f:
-            json.load(f)
-    except:
-        print("Status Points not found Try again after running Update_teams.py ")
-        c = input('Or Press c to continue : ')
-        if c not in ['c', 'C']:
-            exit()
-    try:
-        with open('ids.json', 'r') as file:
-            ids = json.load(file)
-        fetch_ids_from_file()
-    except:
-        fetch_ids_from_file()
-    create_excel()
-
-
 if __name__ == '__main__':
-    start_tennis()
+    fetch_tournament(15001)
