@@ -13,8 +13,15 @@
 <br>
 <button type="button" (click)="getStatistics();">Predict</button>
 
-<div *ngIf="statistic.winner_id > 0">
+
+<div *ngIf="statistic[0].title != ''">
+<table>
+<tr *ngFor="let prediction of statistic">
+<td>{{prediction.title}}</td>
+<td>{{prediction.line1}}</td>
+<td>{{prediction.line2}}</td>
+<td>{{prediction.line3}}</td>
+</tr>
+</table>
 <br>
-<br>
-The winner is {{statistic.win_chance * 100}} percent likely to be {{getPlayerName(statistic.winner_id)}}
 </div>
