@@ -26,14 +26,14 @@ def test_main_predictions():
     r = client.get('/api/predictions')
     assert 'Not yet implemented' in r.data.decode('utf-8')
 
-    #r = client.get('/api/predictions?prediction=WINNER&p1=99&p2=300')
-    #returned_data = r.get_json()
-    #assert 0 < float(returned_data['win_chance']) <= 1
-    #assert returned_data['winner_name'] == "Samuel" or returned_data['winner_name'] == "Susan"
-    #assert returned_data['winner_id'] == "99" or returned_data['winner_id'] == "300"
+    # r = client.get('/api/predictions?prediction=WINNER&p1=99&p2=300')
+    # returned_data = r.get_json()
+    # assert 0 < float(returned_data['win_chance']) <= 1
+    # assert returned_data['winner_name'] == "Samuel" or returned_data['winner_name'] == "Susan"
+    # assert returned_data['winner_id'] == "99" or returned_data['winner_id'] == "300"
 
-    r = client.get('/api/predictions?prediction=WINNER&p1=99&p2=2')
-    assert 'Invalid' in r.data.decode('utf-8')
+    # r = client.get('/api/predictions?prediction=WINNER&p1=99&p2=2')
+    # assert 'Invalid' in r.data.decode('utf-8')
 
     r = client.get('/api/predictions?prediction=THIRD_GAME&p1=1&p2=99')
     returned_data = r.get_json()
