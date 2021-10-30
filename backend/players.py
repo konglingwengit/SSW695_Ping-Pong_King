@@ -43,7 +43,7 @@ def get_player_name(player_id: str):
         for player in players:
             if int(player['id']) == int(player_id):
                 return player['name']
-    return None
+    return "Unknown Player"
 
 
 # Support for unit testing

@@ -9,7 +9,7 @@ import { PlayerService } from '../player.service';
 export class PlayersComponent implements OnInit {
 
   players: any = [{id: 1, name: "Fred"}];
-  statistic: any = {winner_id: 0, winner_probability: 0};
+  statistic: any = [{title: "", line1: "", line2: "", line3: ""}, {title: "", line1: "", line2: ""}, {title: "", line1: "", line2: "", line3: ""}, {title: "", line1: "", line2: ""}, {title: "", line1: "", line2: "", line3: ""}, {title: "", line1: "", line2: ""}];
   firstInput: number = 0;
   secondInput: number = 0;
 
@@ -22,7 +22,7 @@ export class PlayersComponent implements OnInit {
   }
 
   getStatistics(): void {
-    this.playerService.getStatistics(this.firstInput, this.secondInput, "WINNER")
+    this.playerService.getStatistics(this.firstInput, this.secondInput, "ALL")
         .subscribe(statistic => this.statistic = statistic);
   }
 

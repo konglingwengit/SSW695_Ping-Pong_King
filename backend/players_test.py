@@ -49,4 +49,4 @@ def test_get_player_name():
 
     assert players.get_player_name("1") == "Person's Name"
     assert players.get_player_name("3") == "Pickled Herring"
-    assert players.get_player_name("X") is None
+    assert players.get_player_name("X") == "Unknown Player"

@@ -1,25 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from players import get_all_players
 from predictions import win_prediction, total_points_prediction, number_of_games_prediction
 from predictions import games_decided_by_extra_points_prediction, third_game_winner_prediction
-from scraper import scrape_data, update_player_list
+from predictions import money_line_prediction
+from machine_learning.tennis import fetch_tournament
 app = Flask(__name__)
 
 
 @app.route('/')
 def hello():
-    """Return a friendly HTTP greeting."""
-    return 'Hello World!'
-
-
-@app.route('/api/players', methods=['GET'])
-def players():
-    query_parameters = request.args
-    if 'update' in query_parameters:
-        update_player_list()
-    response = jsonify(get_all_players())
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+    return render_template('index.html')
 
 
 @app.route('/api/predictions', methods=['GET'])
@@ -44,29 +34,44 @@ def predictions():
             response = third_game_winner_prediction(first_player, second_player)
         if prediction == "EXTRA_POINTS":
             response = games_decided_by_extra_points_prediction(first_player, second_player)
+        if prediction == "ALL":
+            response = list()
+            response.append(win_prediction(first_player, second_player))
+            response.append(total_points_prediction(first_player, second_player))
+            response.append(number_of_games_prediction(first_player, second_player))
+            response.append(third_game_winner_prediction(first_player, second_player))
+            response.append(games_decided_by_extra_points_prediction(first_player, second_player))
+            response.append(money_line_prediction(first_player, second_player))
+
     response = jsonify(response)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 
-@app.route('/api/scrape', methods=['GET'])
-def scrape():
-    response = jsonify("Scrape not performed")
-    start_date = None
-    end_date = None
-    rank_range = None
+@app.route('/api/players', methods=['GET'])
+def players():
     query_parameters = request.args
-    if 'start' in query_parameters:
-        start_date = query_parameters.get('start')
-    if 'end' in query_parameters:
-        end_date = query_parameters.get('end')
-    if 'rank' in query_parameters:
-        rank_range = query_parameters.get('rank')
-    if start_date and end_date:
-        scrape_data(start_date, end_date, rank_range)
-        response_text = "Scrape performed from " + start_date + " to " + end_date
-        if rank_range is not None:
-            response_text = response_text + " for ranks " + rank_range
+    response = jsonify(get_all_players())
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+
+@app.route('/api/scrape', methods=['POST'])
+def scrape():
+    failed = False
+    response = jsonify("Scrape not performed")
+    query_parameters = request.form
+    try:
+        start_idx = int(query_parameters.get('start'))
+        end_idx = int(query_parameters.get('end'))
+        tournament = query_parameters.get('tournament')
+    except:
+        failed = True
+
+    if not failed:
+        fetch_tournament(tournament, start_idx, end_idx)
+        response_text = "Scrape performed from " + str(start_idx) + " to " + str(end_idx) + \
+                        " for tournament " + tournament
         response = jsonify(response_text)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
