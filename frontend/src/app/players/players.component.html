@@ -1,16 +1,25 @@
 <h2>Choose two players</h2>
-<select name="first" id="first" [(ngModel)]="firstInput">
-  <option value="{{player.id}}" *ngFor="let player of players">
+<table>
+<tr>
+<td width="500">
+First player filter: <input name="p1filter" [(ngModel)]="myFilterP1" (ngModelChange)="filterPlayers()"><br>
+First player: <select name="first" id="first" [(ngModel)]="firstInput">
+  <option value="{{player.id}}" *ngFor="let player of filtered_players_p1">
     {{player.name}}
   </option>
 </select>
-<br>
-<select name="second" id="second" [(ngModel)]="secondInput">
-  <option value="{{player.id}}" *ngFor="let player of players">
+</td>
+<td width="100"></td>
+<td width="500">
+Second player filter: <input name="p2filter" [(ngModel)]="myFilterP2" (ngModelChange)="filterPlayers()"><br>
+Second player: <select name="second" id="second" [(ngModel)]="secondInput">
+  <option value="{{player.id}}" *ngFor="let player of filtered_players_p2">
     {{player.name}}
   </option>
 </select>
-<br>
+</td>
+</tr>
+</table>
 <button type="button" (click)="getStatistics();">Predict</button>
 
 

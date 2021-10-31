@@ -67,8 +67,8 @@ def predict_winner(a_id: int, b_id: int):
                 else:
                     B_won = B_won + 1
 
-        A_win_rate = (A_played / A_won) * 100
-        B_win_rate = (B_played / B_won) * 100
+        A_win_rate = (A_won / A_played) * 100
+        B_win_rate = (B_won / B_played) * 100
 
         probability_A = (A_win_rate / (A_win_rate + B_win_rate)) * 100
         probability_B = (B_win_rate / (A_win_rate + B_win_rate)) * 100
