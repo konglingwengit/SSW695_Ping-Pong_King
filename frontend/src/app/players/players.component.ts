@@ -11,7 +11,14 @@ export class PlayersComponent implements OnInit {
   players: any = [{id: 1, name: "Fred"}];
   filtered_players_p1: any = [{id: 1, name: "Fred"}]
   filtered_players_p2: any = [{id: 1, name: "Fred"}]
-  statistic: any = [{title: "", line1: "", line2: "", line3: ""}, {title: "", line1: "", line2: ""}, {title: "", line1: "", line2: "", line3: ""}, {title: "", line1: "", line2: ""}, {title: "", line1: "", line2: "", line3: ""}, {title: "", line1: "", line2: ""}];
+  statistic: any = [
+    // {title: "", line1: "", line2: "", line3: ""}, 
+    // {title: "", line1: "", line2: ""}, 
+    // {title: "", line1: "", line2: "", line3: ""}, 
+    // {title: "", line1: "", line2: ""}, 
+    // {title: "", line1: "", line2: "", line3: ""}, 
+    // {title: "", line1: "", line2: ""}
+  ];
   firstInput: number = 0;
   secondInput: number = 0;
   myFilterP1: string = "";

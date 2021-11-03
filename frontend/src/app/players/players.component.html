@@ -36,9 +36,10 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
 </div> -->
 
 <!-- Begin Services Row 1 -->
-<div class="row services-row services-row-head services-row-1">
-  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngFor="let prediction of statistic">
-      <div class="services-group wow animated fadeInLeft" data-wow-offset="40">
+<div class="row services-row services-row-head services-row-1" style="margin-top:20px">
+  <ng-container  *ngFor="let prediction of statistic; let i = index">
+  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+     <div class="services-group wow animated fadeInLeft" data-wow-offset="40">
         <!--  <img src="assets/ico/live.png" height="60" alt="">-->
           <h4 class="services-title">{{prediction.title}}</h4>
           <p class="services-body">{{prediction.line1}}</p>
@@ -47,6 +48,8 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
           <p class="services-more"><a href="a.html">Find Out More</a></p>
       </div>
   </div>
+  <div *ngIf="i % 3 == 2" class="clearfix" style="margin-bottom:20px"></div>
+  </ng-container>
 </div>
 
   <!-- <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
