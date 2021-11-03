@@ -36,10 +36,10 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
 </div> -->
 
 <!-- Begin Services Row 1 -->
-<div class="row services-row services-row-head services-row-1" style="margin-top:20px">
+<div class="row services-row services-row-head services-row-1" style="margin-top:20px" *ngIf="statistic.length > 0">
   <ng-container  *ngFor="let prediction of statistic; let i = index">
   <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-     <div class="services-group wow animated fadeInLeft" data-wow-offset="40">
+     <div class="services-group" data-wow-offset="40">
         <!--  <img src="assets/ico/live.png" height="60" alt="">-->
           <h4 class="services-title">{{prediction.title}}</h4>
           <p class="services-body">{{prediction.line1}}</p>
