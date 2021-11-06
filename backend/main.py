@@ -4,6 +4,7 @@ from predictions import win_prediction, total_points_prediction, number_of_games
 from predictions import games_decided_by_extra_points_prediction, third_game_winner_prediction
 from predictions import money_line_prediction
 from machine_learning.tennis import fetch_tournament
+from player_statistics import generate_player_statistics
 app = Flask(__name__)
 
 
@@ -72,6 +73,26 @@ def scrape():
         fetch_tournament(tournament, start_idx, end_idx)
         response_text = "Scrape performed from " + str(start_idx) + " to " + str(end_idx) + \
                         " for tournament " + tournament
+        response = jsonify(response_text)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+
+@app.route('/api/genstats', methods=['POST'])
+def generate_player_stats():
+    failed = False
+    response = jsonify("Scrape not performed")
+    query_parameters = request.form
+    try:
+        start_timestamp = int(query_parameters.get('start'))
+        end_timestamp = int(query_parameters.get('end'))
+    except:
+        failed = True
+
+    if not failed:
+        generate_player_statistics(start_timestamp, end_timestamp)
+        response_text = "Generated player statistic data from timestamp " + \
+                        str(start_timestamp) + " to " + str(end_timestamp)
         response = jsonify(response_text)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response

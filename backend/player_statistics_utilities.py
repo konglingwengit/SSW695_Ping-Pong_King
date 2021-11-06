@@ -1,3 +1,7 @@
+import copy
+import math
+
+
 def create_statistics_dict(statistics_struct, start_timestamp, end_timestamp):
     glicko_struct = dict()
     glicko_struct['rating_timestamp'] = 0
@@ -46,6 +50,8 @@ def create_statistics_dict(statistics_struct, start_timestamp, end_timestamp):
     statistics_struct['stronger_opponents'] = copy.deepcopy(match_stats_struct)
     statistics_struct['weaker_opponents'] = copy.deepcopy(match_stats_struct)
     statistics_struct['matched_opponents'] = copy.deepcopy(match_stats_struct)
+    statistics_struct['specific_opponent'] = dict()
+    statistics_struct['specific_opponent']['template'] = copy.deepcopy(match_stats_struct)
     statistics_struct['glicko_rating'] = glicko_struct
 
 
@@ -136,6 +142,12 @@ def derive_statistics(statistics: dict):
         statistics['average_service_error'] = statistics['sum_of_service_errors'] / num_games
 
 
+def add_opponent_data(player: dict, opponent: int, game: dict):
+    if opponent not in player['specific_opponent']:
+        player['specific_opponent'][str(opponent)] = copy.deepcopy(player['specific_opponent']['template'])
+    add_raw_data(player['specific_opponent'][str(opponent)], game)
+
+
 def add_raw_data(player: dict, game: dict):
     data_sets = ['overall', 'game1', 'game2', 'game3', 'game4', 'game5']
     player['total_matches'] += 1
@@ -172,4 +184,38 @@ def add_raw_data(player: dict, game: dict):
                 print('partial data set for ' + set_name)
 
 
-def update_glicko_rating(p1_rating: dict, p2_rating: dict, timestamp: int, p1_win: bool):
+def update_glicko_rating(winner_rating: dict, loser_rating: dict, timestamp: int):
+    age_rd(winner_rating, timestamp)
+    age_rd(loser_rating, timestamp)
+
+    winner_initial_rating = winner_rating['rating']
+    winner_initial_deviation = winner_rating['rating_deviation']
+    loser_intiial_rating = loser_rating['rating']
+    loser_initial_deviation = loser_rating['rating_deviation']
+    update_rating(winner_rating, loser_intiial_rating, loser_initial_deviation, 1)
+    update_rating(loser_rating, winner_initial_rating, winner_initial_deviation, 0)
+
+    winner_rating['rating_timestamp'] = timestamp
+    loser_rating['rating_timestamp'] = timestamp
+
+
+def age_rd(rating: dict, timestamp: int):
+    # Timestamp in seconds, assume RD averages 50 and one year to become unrated
+    c = 0.0616650
+
+    t = timestamp - rating['rating_timestamp']
+
+    new_rd = math.sqrt(rating['rating_deviation']**2 + c**2 * t)
+    rating['rating_deviation'] = min(new_rd, 350)
+
+
+def update_rating(rating: dict, opponent_rating: int, opponent_rd: int, game_value: int):
+    # https://en.wikipedia.org/wiki/Glicko_rating_system
+    q = 0.00575646273  # known constant, ln(10)/400
+    g_rd_i = 1 / math.sqrt(1 + (3 * q**2 * opponent_rd**2)/(math.pi**2))
+    expected_game_value = 1 / (1 + 10**((g_rd_i*(rating['rating'] - opponent_rating))/(-400)))
+    d_sqd = 1 / (q**2 * g_rd_i**2 * expected_game_value * (1 - expected_game_value))
+    rating_change = (q / (1/rating['rating_deviation']**2 + 1/d_sqd)) * g_rd_i * (game_value - expected_game_value)
+    rating['rating'] += rating_change
+    rating['rating_deviation'] = math.sqrt((1/rating['rating_deviation']**2 + 1/d_sqd)**(-1))
+

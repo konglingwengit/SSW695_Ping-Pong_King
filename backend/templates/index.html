@@ -10,6 +10,15 @@
 </form>
 <br>
 <br>
+<form action="api/genstats" method="post">
+    Start timestamp: <input type="text" name="start" value="1586605800"><br>
+    End timestamp: <input type="text" name="end" value="1635611400"><br>
+    <button type="submit" name="genstat_button" value="">
+        Generate player statistics
+    </button>
+</form>
+<br>
+<br>
 <form action="api/players" method="get">
     <button type="submit" name="get_all_players" value="">List all players</button>
 </form>

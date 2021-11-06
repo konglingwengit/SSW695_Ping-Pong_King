@@ -1,7 +1,7 @@
 import copy
 from google.cloud import datastore
 from player_statistics_utilities import create_statistics_dict, parse_individual_statistics
-from player_statistics_utilities import derive_statistics, add_raw_data
+from player_statistics_utilities import derive_statistics, add_raw_data, add_opponent_data
 from player_statistics_utilities import update_glicko_rating
 
 
@@ -12,7 +12,7 @@ def generate_player_statistics(start_timestamp, end_timestamp):
     query = client.query(kind=event_kind)
     query.add_filter('timestamp', '>=', start_timestamp)
     query.add_filter('timestamp', '<=', end_timestamp)
-    query.order('timestamp')
+    query.order = ['timestamp']
     print('Fetching data')
     game_list = list(query.fetch())
     generate_statistics(game_list)
@@ -61,31 +61,65 @@ def generate_statistics(all_games: list):
 
     create_statistics_dict(statistics_struct, start_timestamp, end_timestamp)
 
+    # Build up the dictionary for all the players we're processing
     for game in all_games:
-        if game['homeTeam'] not in player_statistics:
-            player_statistics[game['homeTeam']] = copy.deepcopy(statistics_struct)
-        if game['awayTeam'] not in player_statistics:
-            player_statistics[game['awayTeam']] = copy.deepcopy(statistics_struct)
+        if game['winnerCode'] == 1 or game['winnerCode'] == 2:
+            if game['homeTeam'] not in player_statistics:
+                player_statistics[game['homeTeam']] = copy.deepcopy(statistics_struct)
+            if game['awayTeam'] not in player_statistics:
+                player_statistics[game['awayTeam']] = copy.deepcopy(statistics_struct)
 
+    # Actually run the processing
+    for game in all_games:
+
+        if not(game['winnerCode'] == 1 or game['winnerCode'] == 2):
+            continue
+
+        player_list = [game['homeTeam'], game['awayTeam']]
+        winner_index = game['winnerCode'] - 1
+        loser_index = 1 - (game['winnerCode'] - 1)
+
+        # Update Glicko rating
+        winner_rating = player_statistics[player_list[winner_index]]['glicko_rating']
+        loser_rating = player_statistics[player_list[loser_index]]['glicko_rating']
+        update_glicko_rating(winner_rating, loser_rating, game['timestamp'])
+
+        # Update game statistics
+        acceptable_deviation = 100
+        similar_strength = 100
+        for player in player_list:
+            if player == player_list[0]:
+                other_player = player_list[1]
+            else:
+                other_player = player_list[0]
+            player_game_data = build_player_game_data(player, game)
+            add_raw_data(player_statistics[player]['all_matches'], player_game_data)
+
+            player_deviation = player_statistics[player]['glicko_rating']['rating_deviation']
+            player_rating = player_statistics[player]['glicko_rating']['rating']
+            other_deviation = player_statistics[other_player]['glicko_rating']['rating_deviation']
+            other_rating = player_statistics[other_player]['glicko_rating']['rating']
+            if player_deviation < acceptable_deviation and other_deviation < acceptable_deviation:
+                if player_rating - other_rating > similar_strength:
+                    add_raw_data(player_statistics[player]['weaker_opponents'], player_game_data)
+                elif other_rating - player_rating > similar_strength:
+                    add_raw_data(player_statistics[player]['stronger_opponents'], player_game_data)
+                else:
+                    add_raw_data(player_statistics[player]['matched_opponents'], player_game_data)
+
+            add_opponent_data(player_statistics[player], other_player, player_game_data)
+
+    categories = ['all_matches', 'weaker_opponents', 'stronger_opponents', 'matched_opponents']
+    game_categories = ['overall', 'game1', 'game2', 'game3', 'game4', 'game5']
     for player in player_statistics:
-        for game in all_games:
-            if game['homeTeam'] == player or game['awayTeam'] == player:
-
-                # Update Glicko rating here
-
-                player_game_data = build_player_game_data(player, game)
-                add_raw_data(player_statistics[player]['all_matches'], player_game_data)
-
-                # Add weaker, stronger, similar, and individual opponents
-
-    for player in player_statistics:
-        derive_statistics(player_statistics[player]['all_matches']['overall'])
-        derive_statistics(player_statistics[player]['all_matches']['game1'])
-        derive_statistics(player_statistics[player]['all_matches']['game2'])
-        derive_statistics(player_statistics[player]['all_matches']['game3'])
-        derive_statistics(player_statistics[player]['all_matches']['game4'])
-        derive_statistics(player_statistics[player]['all_matches']['game5'])
-        # Add weaker, stronger, similar, and individual opponents
+        for category in categories:
+            for game_category in game_categories:
+                if category in player_statistics[player] and game_category in player_statistics[player][category]:
+                    derive_statistics(player_statistics[player][category][game_category])
+        for opponent in player_statistics[player]['specific_opponent']:
+            for game_category in game_categories:
+                if game_category in player_statistics[player]['specific_opponent'][opponent]:
+                    derive_statistics(player_statistics[player]['specific_opponent'][opponent][game_category])
 
     add_to_db(player_statistics)
 
@@ -107,9 +141,4 @@ def add_to_db(player_statistics):
         entity.key = client.key(statistic_kind, int(player))
         for element in player_statistics[player]:
             entity[element] = player_statistics[player][element]
-        # client.put(entity)
-
-
-if __name__ == '__main__':
-    # generate_player_statistics(1586605800, 1635611400)
-    generate_player_statistics(1586605800, 1590000000)
+        client.put(entity)
