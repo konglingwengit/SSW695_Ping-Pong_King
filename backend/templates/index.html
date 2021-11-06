@@ -10,6 +10,15 @@
 </form>
 <br>
 <br>
+<form action="api/genstats" method="post">
+    Start timestamp: <input type="text" name="start" value="1586605800"><br>
+    End timestamp: <input type="text" name="end" value="1635611400"><br>
+    <button type="submit" name="genstat_button" value="">
+        Generate player statistics
+    </button>
+</form>
+<br>
+<br>
 <form action="api/players" method="get">
     <button type="submit" name="get_all_players" value="">List all players</button>
 </form>
@@ -29,6 +38,19 @@
     </select>
     <br>
     <button type="submit" name="prediction_button" value="">Make prediction</button>
+</form>
+<br>
+<br>
+<form action="api/single_player_stats" method="get">
+    Player 1: <input type="text" name="p1" value="345226"><br>
+    <button type="submit" name="single_stat_button" value="">Get stats for a player</button>
+</form>
+<br>
+<br>
+<form action="api/vs_stats" method="get">
+    Player 1: <input type="text" name="p1" value="345226"><br>
+    Player 2: <input type="text" name="p2" value="343693"><br>
+    <button type="submit" name="vs_stat_button" value="">Get Vs. Stats</button>
 </form>
 </body>
 </html>
