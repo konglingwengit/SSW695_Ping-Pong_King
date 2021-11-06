@@ -142,3 +142,31 @@ def add_to_db(player_statistics):
         for element in player_statistics[player]:
             entity[element] = player_statistics[player][element]
         client.put(entity)
+
+
+def get_player_stats(player_id):
+    client = datastore.Client()
+    statistic_data = client.get(client.key('Player_Statistic_Data', int(player_id)))
+    return statistic_data
+
+
+def get_vs_stats(player_1_id, player_2_id):
+    client = datastore.Client()
+    p1_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_1_id)))
+    p2_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_2_id)))
+    output_list = list([None, None, None, None, None, None])
+    output_list[0] = ['Rating', 'Total Matches Played', 'Total Matches Won']
+    output_list[1] = [p1_statistic_data['glicko_rating']['rating'], p1_statistic_data['all_matches']['total_matches'],
+                      p1_statistic_data['all_matches']['total_wins']]
+    output_list[2] = ['Versus Matches Played', 'First Player Matches Won', 'Second Player Matches Won']
+    if str(player_2_id) in p1_statistic_data['specific_opponent']:
+        output_list[3] = [p1_statistic_data['specific_opponent'][str(player_2_id)]['total_matches'],
+                          p1_statistic_data['specific_opponent'][str(player_2_id)]['total_wins'],
+                          p2_statistic_data['specific_opponent'][str(player_1_id)]['total_wins']]
+    else:
+        output_list[3] = [0, 0, 0]
+    output_list[4] = ['Rating', 'Total Matches Played', 'Total Matches Won']
+    output_list[5] = [p2_statistic_data['glicko_rating']['rating'], p2_statistic_data['all_matches']['total_matches'],
+                      p2_statistic_data['all_matches']['total_wins']]
+
+    return output_list

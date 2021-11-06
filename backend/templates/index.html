@@ -39,5 +39,18 @@
     <br>
     <button type="submit" name="prediction_button" value="">Make prediction</button>
 </form>
+<br>
+<br>
+<form action="api/single_player_stats" method="get">
+    Player 1: <input type="text" name="p1" value="345226"><br>
+    <button type="submit" name="single_stat_button" value="">Get stats for a player</button>
+</form>
+<br>
+<br>
+<form action="api/vs_stats" method="get">
+    Player 1: <input type="text" name="p1" value="345226"><br>
+    Player 2: <input type="text" name="p2" value="343693"><br>
+    <button type="submit" name="vs_stat_button" value="">Get Vs. Stats</button>
+</form>
 </body>
 </html>
