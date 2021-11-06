@@ -1,2 +1,133 @@
-<app-players></app-players>
+<!-- Header -->
+<div style="text-align: right;font-size: 12px;" *ngIf="isLoggedin === true">
+    <span>Welcome {{socialUser.name}}</span>
+</div>
+
+<nav id="navbar-section" class="navbar navbar-default navbar-static-top navbar-sticky" role="navigation">
+    <div class="container">
+
+        <div id="navbar-spy" class="collapse navbar-collapse navbar-responsive-collapse">
+<h3 class="services-header-title" style="
+float: left;
+padding: 5px;
+margin-top: 0px;
+">Ping Pong King</h3>
+            <ul class="nav navbar-nav pull-right">
+                <li class="active">
+                    <a href="index.html">Home</a>
+                </li>
+                <li>
+                    <a href="predict.html"><span>Predict</span></a>
+                </li>
+                <li>
+                    <!-- <button type="button" (click)="loginWithGoogle()" class="btn btn-danger">Login with Google</button>     -->
+                    <a *ngIf="isLoggedin === false" (click)="loginWithGoogle()" href="javascript:void(0)">Login</a>
+                    <a *ngIf="isLoggedin === true" (click)="logOut()" href="javascript:void(0)">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End Header -->
+
+<!-- Begin #carousel-section -->
+<section id="carousel-section" class="section-global-wrapper">
+    <div class="container-fluid-kamn">
+        <div class="row">
+            <div id="carousel-1" class="carousel slide" data-ride="carousel">
+
+                <!-- Indicators -->
+                <ol class="carousel-indicators visible-lg">
+                    <li data-target="#carousel-1" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-1" data-slide-to="1"></li>
+                    <li data-target="#carousel-1" data-slide-to="2"></li>
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox">
+                    <!-- Begin Slide 1 -->
+                    <div class="item active">
+                        <img src="assets/img/slider/slide02.jpg" height="400" alt="Image of first carousel">
+                        <div class="carousel-caption">
+                            <h3 class="carousel-title hidden-xs"></h3>
+                            <p class="carousel-body"></p>
+                        </div>
+                    </div>
+                    <!-- End Slide 1 -->
+
+                    <!-- Begin Slide 2 -->
+                    <!--  <div class="item">
+                        <img src="assets/img/slider/slide02.jpg" height="400" alt="Image of second carousel">
+                        <div class="carousel-caption">
+                            <h3 class="carousel-title hidden-xs"></h3>
+                            <p class="carousel-body"></p>
+                        </div>
+                    </div>-->
+                    <!-- End Slide 2 -->
+
+                    <!-- Begin Slide 3 -->
+                    <div class="item">
+                        <img src="assets/img/slider/slide03.jpg" height="400" alt="Image of third carousel">
+                        <div class="carousel-caption">
+                            <h3 class="carousel-title hidden-xs"></h3>
+                            <p class="carousel-body"></p>
+                        </div>
+                    </div>
+                    <!-- End Slide 3 -->
+                </div>
+
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-1" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="right carousel-control" href="#carousel-1" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End #carousel-section -->
+
+
+<!-- Begin #services-section -->
+<section id="services" class="services-section section-global-wrapper">
+    <div class="container" *ngIf="isLoggedin === true">
+        <div class="row">
+            <!--<div class="services-header"><h3 class="services-header-title">Ping Pong King</h3></div>-->
+        </div>
+        <div id="container" class="center-justify">
+            <div class="sea-container">
+                <app-players></app-players>
+                <!--</form>-->
+                <p id="selectedId"></p>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="text-align: center;">
+        <!-- <h2 class="text-center mb-5">Login with Google</h2> -->
+        <div *ngIf="isLoggedin === false">
+            <div>
+                <button type="button" (click)="loginWithGoogle()" class="btn btn-success">Login with Google</button>
+            </div>
+        </div>
+      
+        <!-- <div *ngIf="isLoggedin === true">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" class="form-control" [value]="socialUser.firstName" id="firstname" readonly>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" class="form-control" [value]="socialUser.lastName" id="lastname" readonly>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" class="form-control" [value]="socialUser.email" id="email" readonly>
+          </div>
+      
+          <button type="button" (click)="logOut()" class="btn btn-primary">Log Out</button>
+        </div> -->
+    </div>
+</section>
 
