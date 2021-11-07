@@ -1,6 +1,5 @@
 import copy
 from google.cloud import datastore
-import pandas as pd
 
 out_file = open('out.csv', 'w+')
 
@@ -19,9 +18,9 @@ def generate_player_statistics():
     query = client.query(kind=event_kind)
 
     # testing with small data
-    # start_timestamp, end_timestamp = 1586605800, 1586610600
-    # query.add_filter('timestamp', '>=', start_timestamp)
-    # query.add_filter('timestamp', '<=', end_timestamp)
+    start_timestamp, end_timestamp = 1586605800, 1586610600
+    query.add_filter('timestamp', '>=', start_timestamp)
+    query.add_filter('timestamp', '<=', end_timestamp)
 
     game_list = list(query.fetch())
 
@@ -46,7 +45,21 @@ def create_statistics_dict(statistics_struct, start_timestamp, end_timestamp):
     game_stats_struct['sum_of_max_points_in_a_row'] = 0
     game_stats_struct['total_games_with_comeback_wins'] = 0
     game_stats_struct['sum_of_comeback_to_win'] = 0
+    game_stats_struct['total_games_with_comeback_losses'] = 0
+    game_stats_struct['sum_of_comeback_losses'] = 0
     game_stats_struct['sum_of_service_errors'] = 0
+    game_stats_struct['win_rate'] = 0
+    game_stats_struct['average_points'] = 0
+    game_stats_struct['average_opponent_points'] = 0
+    game_stats_struct['average_biggest_lead'] = 0
+    game_stats_struct['average_service_points_won'] = 0
+    game_stats_struct['average_service_points_lost'] = 0
+    game_stats_struct['average_receiver_points_won'] = 0
+    game_stats_struct['average_receiver_points_lost'] = 0
+    game_stats_struct['average_max_points_in_a_row'] = 0
+    game_stats_struct['average_comeback_to_win'] = 0
+    game_stats_struct['average_comeback_loss'] = 0
+    game_stats_struct['average_service_error'] = 0
     match_stats_struct = dict()
     match_stats_struct['total_matches'] = 0
     match_stats_struct['total_wins'] = 0
@@ -62,6 +75,8 @@ def create_statistics_dict(statistics_struct, start_timestamp, end_timestamp):
     statistics_struct['stronger_opponents'] = copy.deepcopy(match_stats_struct)
     statistics_struct['weaker_opponents'] = copy.deepcopy(match_stats_struct)
     statistics_struct['matched_opponents'] = copy.deepcopy(match_stats_struct)
+    statistics_struct['specific_opponent'] = dict()
+    statistics_struct['specific_opponent']['template'] = copy.deepcopy(match_stats_struct)
     statistics_struct['glicko_rating'] = glicko_struct
 
 
@@ -121,20 +136,28 @@ def parse_individual_statistics(is_home: bool, period: int, event_data: dict, pl
                 player_event_data['games_won'] = 0
 
     if statistics_name in event_data:
-        player_event_data['total_points'] = int(event_data[statistics_name]['Points won'][side])
-        player_event_data['opponent_points'] = int(event_data[statistics_name]['Points won'][opp_side])
-        player_event_data['biggest_lead'] = int(event_data[statistics_name]['Biggest lead'][side])
-        player_event_data['service_points_won'] = \
-            get_service_points(event_data[statistics_name]['Service points won'][side])
-        player_event_data['service_points_lost'] = \
-            get_service_points(event_data[statistics_name]['Receiver points won'][opp_side])
-        player_event_data['receiver_points_won'] = \
-            get_service_points(event_data[statistics_name]['Receiver points won'][side])
-        player_event_data['receiver_points_lost'] = \
-            get_service_points(event_data[statistics_name]['Service points won'][opp_side])
-        player_event_data['service_errors'] = int(event_data[statistics_name]['Service errors'][side])
-        player_event_data['max_points_in_a_row'] = int(event_data[statistics_name]['Max points in a row'][side])
-        player_event_data['comeback_points'] = int(event_data[statistics_name]['Comeback to win'][side])
+        if 'Points won' in event_data[statistics_name]:
+            player_event_data['total_points'] = int(event_data[statistics_name]['Points won'][side])
+            player_event_data['opponent_points'] = int(event_data[statistics_name]['Points won'][opp_side])
+        if 'Biggest lead' in event_data[statistics_name]:
+            player_event_data['biggest_lead'] = int(event_data[statistics_name]['Biggest lead'][side])
+        if 'Service points won' in event_data[statistics_name]:
+            player_event_data['service_points_won'] = \
+                get_service_points(event_data[statistics_name]['Service points won'][side])
+            player_event_data['receiver_points_lost'] = \
+                get_service_points(event_data[statistics_name]['Service points won'][opp_side])
+        if 'Receiver points won' in event_data[statistics_name]:
+            player_event_data['receiver_points_won'] = \
+                get_service_points(event_data[statistics_name]['Receiver points won'][side])
+            player_event_data['service_points_lost'] = \
+                get_service_points(event_data[statistics_name]['Receiver points won'][opp_side])
+        if 'Service errors' in event_data[statistics_name]:
+            player_event_data['service_errors'] = int(event_data[statistics_name]['Service errors'][side])
+        if 'Max points in a row' in event_data[statistics_name]:
+            player_event_data['max_points_in_a_row'] = int(event_data[statistics_name]['Max points in a row'][side])
+        if 'Comeback to win' in event_data[statistics_name]:
+            player_event_data['comeback_points'] = int(event_data[statistics_name]['Comeback to win'][side])
+            player_event_data['opponent_comeback_points'] = int(event_data[statistics_name]['Comeback to win'][opp_side])
 
 
 def generate_statistics(all_games: list):
@@ -217,18 +240,32 @@ def add_raw_data(player: dict, game: dict):
         if set_name in game:
             player[set_name]['total_games_played'] += game[set_name]['games_played']
             player[set_name]['total_games_won'] += game[set_name]['games_won']
-            player[set_name]['total_player_points'] += game[set_name]['total_points']
-            player[set_name]['total_opponent_points'] += game[set_name]['opponent_points']
-            player[set_name]['sum_of_biggest_leads'] += game[set_name]['biggest_lead']
-            player[set_name]['sum_of_service_points_won'] += game[set_name]['service_points_won']
-            player[set_name]['sum_of_receiver_points_won'] += game[set_name]['receiver_points_won']
-            player[set_name]['sum_of_service_points_lost'] += game[set_name]['service_points_lost']
-            player[set_name]['sum_of_receiver_points_lost'] += game[set_name]['receiver_points_lost']
-            player[set_name]['sum_of_max_points_in_a_row'] += game[set_name]['max_points_in_a_row']
-            player[set_name]['sum_of_service_errors'] += game[set_name]['service_errors']
-            if game[set_name]['comeback_points'] > 0:
-                player[set_name]['total_games_with_comeback_wins'] += 1
-                player[set_name]['sum_of_comeback_to_win'] += game[set_name]['comeback_points']
+            if 'total_points' in game[set_name]:
+                player[set_name]['total_player_points'] += game[set_name]['total_points']
+                if 'opponent_points' in game[set_name]:
+                    player[set_name]['total_opponent_points'] += game[set_name]['opponent_points']
+                if 'biggest_lead' in game[set_name]:
+                    player[set_name]['sum_of_biggest_leads'] += game[set_name]['biggest_lead']
+                if 'service_points_won' in game[set_name]:
+                    player[set_name]['sum_of_service_points_won'] += game[set_name]['service_points_won']
+                if 'receiver_points_won' in game[set_name]:
+                    player[set_name]['sum_of_receiver_points_won'] += game[set_name]['receiver_points_won']
+                if 'service_points_lost' in game[set_name]:
+                    player[set_name]['sum_of_service_points_lost'] += game[set_name]['service_points_lost']
+                if 'receiver_points_lost' in game[set_name]:
+                    player[set_name]['sum_of_receiver_points_lost'] += game[set_name]['receiver_points_lost']
+                if 'max_points_in_a_row' in game[set_name]:
+                    player[set_name]['sum_of_max_points_in_a_row'] += game[set_name]['max_points_in_a_row']
+                if 'service_errors' in game[set_name]:
+                    player[set_name]['sum_of_service_errors'] += game[set_name]['service_errors']
+                if 'comeback_points' in game[set_name] and game[set_name]['comeback_points'] > 0:
+                    player[set_name]['total_games_with_comeback_wins'] += 1
+                    player[set_name]['sum_of_comeback_to_win'] += game[set_name]['comeback_points']
+                if 'opponent_comeback_points' in game[set_name] and game[set_name]['opponent_comeback_points'] > 0:
+                    player[set_name]['total_games_with_comeback_losses'] += 1
+                    player[set_name]['sum_of_comeback_losses'] += game[set_name]['opponent_comeback_points']
+            else:
+                print('partial data set for ' + set_name)
 
 
 if __name__ == '__main__':
