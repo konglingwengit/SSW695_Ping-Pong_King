@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "ping-pong-king-666",
+  "private_key_id": "1918cd5cdb8c23f2475f101b10b88df413ed4cd9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDc3ET3HYWuQKz0\nyxQf+4UD9r5j/kPoYLzjUhQ2QBDXZmarbQxq/B7cQt/yoiJiwBsGoYMt2A1R1jzA\nyJK4hfZXVlsmFXVM1Fb4prEo7YEgmX2fRgYAcYMky8EqAiuK2hMina80PxOhorQP\nzNo3iT5ahCv9+WijWUWbtCr1g32kRfhQyuEXjQa4hrbcbHHylq5kiBwc6IHqp2G+\nWN5oTZgjESlYuqvkcVoe9zhiW0hZh6WOThfL+xNJijUBWPpilhqRjxC4eViZcyIh\nAoBLsD9aCmwstHW+FY6rc0ptHwHoWcUyf0OX6sSoVMhaZexSzGt7enIWjoJ0PIIR\nVWywnBcjAgMBAAECggEABfD6/fbSWMyumms4IGAgxOmHV6NIamDn0+mqV4dDrLe5\nfVUSp3Ie1mgKJDnOWP+3+mav47TTLudnfPwoTkR0SwcsroqXPDjeGhRJ4cL53Umj\nwnwcvzhOgdflW17xkuuo5h59zxb/TTLWSzKEkEfl4IN7t3pVIUfOgpDHMxGVeKzI\nXkVZVnlUIbZn9CqlXw2WKUD3qyxNd7GnxfdeQKIQeJtpiE63T3MomLHcNZ6pStSH\ncfbswlRyK8JqMryE8S19iMDvuiatFZzzhheUSvYfEBcriB+uvWzRC8URojlORdWT\nH8f1q6o4JaPoP+mq5GncXBDrvfPRgq6a8w6sM6J8wQKBgQD9yWP7HZ0fizezuSLi\nw6CaUanJPmbxQqgcfd4OrIwZnjH4ZvywaZub3cP5HUU3qUFb3UANUYgO9devCNNa\n/XKbpK/nvuJCIbkMvSg3K6UE4EWrAxqOh6bnDrRl89DSajasFPNyHc4Ub6zyJt6l\nm0hcfNMaSvn2IJSJ+Lwo2LNqIQKBgQDeyV3zy/R2My8de3xy6WnG/fChjQyUk8un\nd34elKYuHz5tPvTH6EDBCPBSE7wMslVZco/lad2r3bRFn0K6l8DL/qnxyJjLyg3Z\nH3H4mhpTkNKao9WaYend+tK6LRSchdrvrgPWwkvDQ4nLe2r9OvbOGQpm6khkd6aS\nEIWf3CpAwwKBgQDye6v10VPBQemU5P26ISSgjgpl6CO/vOqXXoP/DUpHZ+li6DPj\n8uPlRzzqFtd92VBDj+CVWSNg9/B+ozYeqC8LG42fJblVapc+3rVAEYl4YTjvruV+\n7YnBF0GycAVEJovaW6JHlMbEq/dY3164aOf4xqOFacHvMy35rhlKBdNXQQKBgQCA\nmy2pNut/8DwagNZuX1+4h48JMys3+bluiwQ7EwR7S332Aom7fM8kn8xbFRlRGwE6\nCXAXtu1H8UvHhRA4NrINEI16DZpmydUEqapZIFxiMQ/iRQFhhXRDuC89Whiz4nFo\nOsPsjWy+45X/6NbyJ7+hacMfdc8kcA2v8+mvRqD9kQKBgBfVk2zVlQpPL/eP6w2q\nsBApLDI1C8POHeqTY3R2O7//8+6Bb/abTguEhliAJn+nlHQOzg6AEcjt6h/bucGp\npUB8WXBCqn8dN68oTZtV9IF8IV1t+3vS+RMATGQSALYQi342ktUFmE/fsGeZRHsR\n7cl8LV3WD9PnnMGZgUTBhWOm\n-----END PRIVATE KEY-----\n",
+  "client_email": "ping-pong-king-666@appspot.gserviceaccount.com",
+  "client_id": "104814665040431522073",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ping-pong-king-666%40appspot.gserviceaccount.com"
+}
