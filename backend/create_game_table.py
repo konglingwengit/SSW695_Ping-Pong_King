@@ -1,7 +1,7 @@
 import copy
 from google.cloud import datastore
 
-out_file = open('out.csv', 'w+')
+out_file = open('game_table.csv', 'w+')
 
 
 def write_file(row):
@@ -16,11 +16,6 @@ def generate_player_statistics():
     client = datastore.Client()
     event_kind = 'Event_Data'
     query = client.query(kind=event_kind)
-
-    # testing with small data
-    start_timestamp, end_timestamp = 1586605800, 1586610600
-    query.add_filter('timestamp', '>=', start_timestamp)
-    query.add_filter('timestamp', '<=', end_timestamp)
 
     game_list = list(query.fetch())
 
@@ -157,12 +152,14 @@ def parse_individual_statistics(is_home: bool, period: int, event_data: dict, pl
             player_event_data['max_points_in_a_row'] = int(event_data[statistics_name]['Max points in a row'][side])
         if 'Comeback to win' in event_data[statistics_name]:
             player_event_data['comeback_points'] = int(event_data[statistics_name]['Comeback to win'][side])
-            player_event_data['opponent_comeback_points'] = int(event_data[statistics_name]['Comeback to win'][opp_side])
+            player_event_data['opponent_comeback_points'] = int(
+                event_data[statistics_name]['Comeback to win'][opp_side])
 
 
 def generate_statistics(all_games: list):
     player_statistics = dict()
     statistics_struct = dict()
+
 
     start_timestamp = 2147483647
     end_timestamp = 0
@@ -189,12 +186,16 @@ def generate_statistics(all_games: list):
                 add_raw_data(player_statistics[player]['all_matches'], player_game_data)
 
                 # Add weaker, stronger, similar, and individual opponents
-    row = ['playerA', 'PlayerB','who_win']
+    row = ['playerA', 'PlayerB', 'who_win']
     for y in ['A', 'B']:
+        count = 0
         for x in range(1, 6):
+            count += 1
             row.append(f'{y}set{x}')
-    row = row + ['Max points in a row A','Max points in a row B', 'Comeback to win A','Comeback to win B',
-                 'Points won A','Points won B']
+
+        #exact_number_of_sets = count
+    row = row + ['Exact Number of Sets', 'Total Points', 'First Game Winner', 'Sets Decided by Extra Points']
+
     write_file(row)
 
     for game in all_games:
@@ -219,30 +220,53 @@ def generate_statistics(all_games: list):
             except KeyError:
                 row.append('-')
 
+        exact_number_of_sets = 0
+        for x in range(1,6):
+
+            if(row[2+x] == '-'):
+                continue
+            else:
+                exact_number_of_sets += 1
+
         try:
-            row.append(game['overall_statistics']['Max points in a row']['home'])
-        except KeyError:
-            row.append('-')
-        try:
-            row.append(game['overall_statistics']['Max points in a row']['away'])
+            row.append(exact_number_of_sets)          #number of sets
         except KeyError:
             row.append('-')
 
+        totalpointsby2 = 0
+        for x in range(1, 6):
+            if(row[2+x] == '-') or (row[7+x] == '-'):
+                continue
+            else:
+                totalpointsby2 = totalpointsby2 + int(row[2+x]) + int(row[7+x])
         try:
-            row.append(game['overall_statistics']['Comeback to win']['home'])
+            row.append(totalpointsby2)  #total points
         except KeyError:
             row.append('-')
+                                                    #first set winner
+        firstSetWinner = 0
+        if(row[3] == '-') or (row[8] == '-'):
+            break
+        elif (row[3] != '-') and (row[8] != '-') and int(row[3]) > int(row[8]):
+            firstSetWinner = 0
+            try:
+                row.append(firstSetWinner)
+            except KeyError:
+                row.append('-')
+        if int(row[3]) <= int(row[8]):
+            firstSetWinner = 1
+            try:
+                row.append(firstSetWinner)
+            except KeyError:
+                row.append('-')
+        extra_point_sets = 0
+        for x in range(1, 6):
+            if(row[2+x] == '-') or (row[7+x] == '-'):
+                continue
+            elif(int(row[2+x]) > 11) or (int(row[7+x]) > 11):
+                extra_point_sets += 1
         try:
-            row.append(game['overall_statistics']['Comeback to win']['away'])
-        except KeyError:
-            row.append('-')
-
-        try:
-            row.append(game['overall_statistics']['Points won']['home'])
-        except KeyError:
-            row.append('-')
-        try:
-            row.append(game['overall_statistics']['Points won']['away'])
+            row.append(extra_point_sets)
         except KeyError:
             row.append('-')
 
@@ -283,8 +307,8 @@ def add_raw_data(player: dict, game: dict):
                     player[set_name]['total_games_with_comeback_losses'] += 1
                     player[set_name]['sum_of_comeback_losses'] += game[set_name]['opponent_comeback_points']
             else:
-                print('partial data set for ' + set_name)
-
+                #print('partial data set for ' + set_name)
+                continue
 
 if __name__ == '__main__':
     generate_player_statistics()
