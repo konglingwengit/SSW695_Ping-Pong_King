@@ -1,3 +1,7 @@
+#run      export GOOGLE_APPLICATION_CREDENTIALS="KEY_PATH"  
+#replace KEY_PATH  like : /Users/lingwenkong/Downloads/ping-pong-king-666-1918cd5cdb8c.json
+#you can find the json file in this backend folder
+
 import copy
 from google.cloud import datastore
 
