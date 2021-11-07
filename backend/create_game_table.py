@@ -219,14 +219,32 @@ def generate_statistics(all_games: list):
             except KeyError:
                 row.append('-')
 
-        row.append(game['overall_statistics']['Max points in a row']['home'])
-        row.append(game['overall_statistics']['Max points in a row']['away'])
+        try:
+            row.append(game['overall_statistics']['Max points in a row']['home'])
+        except KeyError:
+            row.append('-')
+        try:
+            row.append(game['overall_statistics']['Max points in a row']['away'])
+        except KeyError:
+            row.append('-')
 
-        row.append(game['overall_statistics']['Comeback to win']['home'])
-        row.append(game['overall_statistics']['Comeback to win']['away'])
+        try:
+            row.append(game['overall_statistics']['Comeback to win']['home'])
+        except KeyError:
+            row.append('-')
+        try:
+            row.append(game['overall_statistics']['Comeback to win']['away'])
+        except KeyError:
+            row.append('-')
 
-        row.append(game['overall_statistics']['Points won']['home'])
-        row.append(game['overall_statistics']['Points won']['away'])
+        try:
+            row.append(game['overall_statistics']['Points won']['home'])
+        except KeyError:
+            row.append('-')
+        try:
+            row.append(game['overall_statistics']['Points won']['away'])
+        except KeyError:
+            row.append('-')
 
         write_file(row)
         row.clear()
