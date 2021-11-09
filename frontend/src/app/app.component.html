@@ -13,11 +13,17 @@ padding: 5px;
 margin-top: 0px;
 ">Ping Pong King</h3>
             <ul class="nav navbar-nav pull-right">
-                <li class="active">
-                    <a href="index.html">Home</a>
+                <li *ngIf="predictionsActive === true" class="active">
+                    <a  (click)="activatePredictions()" href="javascript:void(0)"><span>Predictions</span></a>
                 </li>
-                <li>
-                    <a href="predict.html"><span>Predict</span></a>
+                <li *ngIf="predictionsActive === false">
+                    <a  (click)="activatePredictions()" href="javascript:void(0)"><span>Predictions</span></a>
+                </li>
+                <li *ngIf="statisticsActive === false">
+                    <a  (click)="activateStatistics()" href="javascript:void(0)"><span>Statistics</span></a>
+                </li>
+                <li *ngIf="statisticsActive === true" class="active">
+                    <a  (click)="activateStatistics()" href="javascript:void(0)"><span>Statistics</span></a>
                 </li>
                 <li>
                     <!-- <button type="button" (click)="loginWithGoogle()" class="btn btn-danger">Login with Google</button>     -->
@@ -96,9 +102,17 @@ margin-top: 0px;
         <div class="row">
             <!--<div class="services-header"><h3 class="services-header-title">Ping Pong King</h3></div>-->
         </div>
-        <div id="container" class="center-justify">
+        
+        <div *ngIf="predictionsActive === true" id="container" class="center-justify">
             <div class="sea-container">
                 <app-players></app-players>
+                <!--</form>-->
+                <p id="selectedId"></p>
+            </div>
+        </div>
+        <div *ngIf="statisticsActive === true" id="container" class="center-justify">
+            <div class="sea-container">
+                <app-statistics></app-statistics>
                 <!--</form>-->
                 <p id="selectedId"></p>
             </div>
