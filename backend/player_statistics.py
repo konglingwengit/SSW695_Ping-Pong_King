@@ -1,4 +1,5 @@
 import copy
+import random
 from google.cloud import datastore
 from player_statistics_utilities import create_statistics_dict, parse_individual_statistics
 from player_statistics_utilities import derive_statistics, add_raw_data, add_opponent_data
@@ -72,7 +73,7 @@ def generate_statistics(all_games: list):
     # Actually run the processing
     for game in all_games:
 
-        if not(game['winnerCode'] == 1 or game['winnerCode'] == 2):
+        if not (game['winnerCode'] == 1 or game['winnerCode'] == 2):
             continue
 
         player_list = [game['homeTeam'], game['awayTeam']]
@@ -146,27 +147,74 @@ def add_to_db(player_statistics):
 
 def get_player_stats(player_id):
     client = datastore.Client()
-    statistic_data = client.get(client.key('Player_Statistic_Data', int(player_id)))
-    return statistic_data
+    output_list = []
+    try:
+        statistic_data = client.get(client.key('Player_Statistic_Data', int(player_id)))
+        output_list.append([{'name': 'Rating', 'data': round(statistic_data['glicko_rating']['rating'], 0)},
+                            {'name': 'Total Matches Played', 'data': statistic_data['all_matches']['total_matches']},
+                            {'name': 'Total Matches Won', 'data': statistic_data['all_matches']['total_wins']}])
+        for i in range(0, 6):
+            add_random_stat(output_list[0], statistic_data)
+    except:
+        output_list.append([{'name': 'Failed to retrieve statistics', 'data': ''}])
+    return output_list
 
 
 def get_vs_stats(player_1_id, player_2_id):
     client = datastore.Client()
-    p1_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_1_id)))
-    p2_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_2_id)))
-    output_list = list([None, None, None, None, None, None])
-    output_list[0] = ['Rating', 'Total Matches Played', 'Total Matches Won']
-    output_list[1] = [p1_statistic_data['glicko_rating']['rating'], p1_statistic_data['all_matches']['total_matches'],
-                      p1_statistic_data['all_matches']['total_wins']]
-    output_list[2] = ['Versus Matches Played', 'First Player Matches Won', 'Second Player Matches Won']
-    if str(player_2_id) in p1_statistic_data['specific_opponent']:
-        output_list[3] = [p1_statistic_data['specific_opponent'][str(player_2_id)]['total_matches'],
-                          p1_statistic_data['specific_opponent'][str(player_2_id)]['total_wins'],
-                          p2_statistic_data['specific_opponent'][str(player_1_id)]['total_wins']]
-    else:
-        output_list[3] = [0, 0, 0]
-    output_list[4] = ['Rating', 'Total Matches Played', 'Total Matches Won']
-    output_list[5] = [p2_statistic_data['glicko_rating']['rating'], p2_statistic_data['all_matches']['total_matches'],
-                      p2_statistic_data['all_matches']['total_wins']]
+    output_list = []
+    try:
+        p1_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_1_id)))
+        p2_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_2_id)))
+
+        output_list.append([{'name': 'Rating', 'data': round(p1_statistic_data['glicko_rating']['rating'], 0)},
+                            {'name': 'Total Matches Played', 'data': p1_statistic_data['all_matches']['total_matches']},
+                            {'name': 'Total Matches Won', 'data': p1_statistic_data['all_matches']['total_wins']}])
+        for i in range(0, 6):
+            add_random_stat(output_list[0], p1_statistic_data)
+
+        matches = 0
+        first_wins = 0
+        second_wins = 0
+        if str(player_2_id) in p1_statistic_data['specific_opponent']:
+            matches = p1_statistic_data['specific_opponent'][str(player_2_id)]['total_matches']
+            first_wins = p1_statistic_data['specific_opponent'][str(player_2_id)]['total_wins']
+            second_wins = p2_statistic_data['specific_opponent'][str(player_1_id)]['total_wins']
+        output_list.append([{'name': 'Versus Matches Played', 'data': matches},
+                            {'name': 'First Player Matches Won', 'data': first_wins},
+                            {'name': 'Second Player Matches Won', 'data': second_wins}])
+
+        output_list.append([{'name': 'Rating', 'data': round(p2_statistic_data['glicko_rating']['rating'], 0)},
+                            {'name': 'Total Matches Played', 'data': p2_statistic_data['all_matches']['total_matches']},
+                            {'name': 'Total Matches Won', 'data': p2_statistic_data['all_matches']['total_wins']}])
+        for i in range(0, 6):
+            add_random_stat(output_list[2], p2_statistic_data)
+    except:
+        output_list.append([{'name': 'Failed to retrieve statistics', 'data': ''}])
 
     return output_list
+
+
+def add_random_stat(output: list, statistics: dict):
+    list_of_categories = ['all_matches', 'stronger_opponents', 'weaker_opponents', 'matched_opponents']
+    list_of_category_strings = ['in all matches', 'against stronger opponents',
+                                'against weaker opponents', 'in evenly matched games']
+    list_of_games = ['overall', 'game1', 'game2', 'game3', 'game4', 'game5']
+    list_of_game_strings = ['in all games', 'in game 1', 'in game 2', 'in game 3', 'in game 4', 'in game 5']
+    list_of_statistics = ['total_games_played', 'total_games_won', 'total_player_points', 'total_opponent_points',
+                          'total_games_with_comeback_wins', 'sum_of_service_errors', 'win_rate',
+                          'average_points', 'average_opponent_points', 'average_biggest_lead',
+                          'average_service_points_won', 'average_service_points_lost', 'average_receiver_points_won',
+                          'average_receiver_points_lost', 'average_max_points_in_a_row', 'average_comeback_to_win',
+                          'average_comeback_loss', 'average_service_error']
+    data = 0
+    # Statistics of 0 typically mean we have no data for that particular item, so don't send them out.
+    while data == 0:
+        category_index = random.randrange(0, len(list_of_categories))
+        game_index = random.randrange(0, len(list_of_games))
+        statistic = random.randrange(0, len(list_of_statistics))
+        name = list_of_statistics[statistic].capitalize().replace('_', ' ') + ' ' + \
+            list_of_category_strings[category_index] + ' ' + list_of_game_strings[game_index]
+        data = statistics[list_of_categories[category_index]][list_of_games[game_index]][list_of_statistics[statistic]]
+
+    output.append({'name': name, 'data': round(data, 2)})

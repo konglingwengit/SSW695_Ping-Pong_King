@@ -1,0 +1,43 @@
+<h2>Show Player Statistics</h2>
+<table>
+<tr>
+<td width="500">
+First player filter: <input name="p1filter" [(ngModel)]="myFilterP1" (ngModelChange)="filterPlayers()"><br>
+First player: <select name="first" id="first" [(ngModel)]="firstInput">
+  <option value="{{player.id}}" *ngFor="let player of filtered_players_p1">
+    {{player.name}}
+  </option>
+</select>
+</td>
+</tr>
+<tr><td><button type="button" (click)="getPlayerStatistics(firstInput);">Player Statistics</button></td></tr>
+<tr><td height=50></td></tr>
+<tr>
+<td>
+Second player filter: <input name="p2filter" [(ngModel)]="myFilterP2" (ngModelChange)="filterPlayers()"><br>
+Second player: <select name="second" id="second" [(ngModel)]="secondInput">
+  <option value="{{player.id}}" *ngFor="let player of filtered_players_p2">
+    {{player.name}}
+  </option>
+</select>
+</td>
+</tr>
+<tr><td><button type="button" (click)="getVsStatistics(firstInput, secondInput);">Matchup Statistics</button></td></tr>
+</table>
+
+<!-- Begin Services Row 1 -->
+<div class="row services-row services-row-head services-row-1" style="margin-top:20px" *ngIf="statistic.length > 0">
+  <ng-container  *ngFor="let set of statistic; let i = index">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+    <div class="services-group" data-wow-offset="40">
+    <h4 class="services-title" *ngIf="i==0">{{getPlayerName(firstInput)}} Statistics</h4>
+    <h4 class="services-title" *ngIf="i==1">Matchup Statistics</h4>
+    <h4 class="services-title" *ngIf="i==2">{{getPlayerName(secondInput)}} Statistics</h4>
+    <ng-container  *ngFor="let element of set; let j = index">
+          <p class="services-body">{{element.name}}: {{element.data}}</p>
+    </ng-container>
+    </div>
+    </div>
+  <div *ngIf="i % 3 == 2" class="clearfix" style="margin-bottom:20px"></div>
+  </ng-container>
+</div>
