@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
   socialUser: SocialUser;
   isLoggedin: boolean = false;  
   loading: boolean = false;
+  statisticsActive: boolean = false;
+  predictionsActive: boolean = true;
   
   constructor(
     private formBuilder: FormBuilder, 
@@ -55,6 +57,16 @@ export class AppComponent implements OnInit {
 
   logOut(): void {
     this.socialAuthService.signOut();
+  }
+
+  activateStatistics(): void {
+    this.predictionsActive = false;
+    this.statisticsActive = true;
+  }
+
+  activatePredictions(): void {
+    this.statisticsActive = false;
+    this.predictionsActive = true;
   }
 
 }

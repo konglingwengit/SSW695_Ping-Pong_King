@@ -4,8 +4,12 @@ from predictions import win_prediction, total_points_prediction, number_of_games
 from predictions import games_decided_by_extra_points_prediction, third_game_winner_prediction
 from predictions import money_line_prediction
 from machine_learning.tennis import fetch_tournament
+<<<<<<< HEAD
 from users import get_all_users, add_user, user_exists
 
+=======
+from player_statistics import generate_player_statistics, get_player_stats, get_vs_stats
+>>>>>>> cd6f25c39af0c4edf9be40cd3e46faa3eea068ff
 app = Flask(__name__)
 
 
@@ -52,7 +56,6 @@ def predictions():
 
 @app.route('/api/players', methods=['GET'])
 def players():
-    query_parameters = request.args
     response = jsonify(get_all_players())
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
@@ -99,6 +102,49 @@ def user():
             response = jsonify(response_text)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
+        
+@app.route('/api/genstats', methods=['POST'])
+def generate_player_stats():
+    failed = False
+    response = jsonify("Scrape not performed")
+    query_parameters = request.form
+    try:
+        start_timestamp = int(query_parameters.get('start'))
+        end_timestamp = int(query_parameters.get('end'))
+    except:
+        failed = True
+
+    if not failed:
+        generate_player_statistics(start_timestamp, end_timestamp)
+        response_text = "Generated player statistic data from timestamp " + \
+                        str(start_timestamp) + " to " + str(end_timestamp)
+        response = jsonify(response_text)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+
+@app.route('/api/single_player_stats', methods=['GET'])
+def single_player_stats():
+    response = jsonify("Not a valid player")
+    query_parameters = request.args
+    if 'p1' in query_parameters:
+        first_player = query_parameters.get('p1')
+        response = jsonify(get_player_stats(first_player))
+        response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+
+@app.route('/api/vs_stats', methods=['GET'])
+def vs_stats():
+    response = jsonify("Not a valid player")
+    query_parameters = request.args
+    if 'p1' in query_parameters and 'p2' in query_parameters:
+        first_player = query_parameters.get('p1')
+        second_player = query_parameters.get('p2')
+        response = jsonify(get_vs_stats(first_player, second_player))
+        response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

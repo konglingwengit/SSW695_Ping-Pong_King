@@ -2,23 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { WebService } from '../web.service';
 
 @Component({
-  selector: 'app-players',
-  templateUrl: './players.component.html',
-  styleUrls: ['./players.component.css']
+  selector: 'app-statistics',
+  templateUrl: './statistics.component.html',
+  styleUrls: ['./statistics.component.css']
 })
-export class PlayersComponent implements OnInit {
+export class StatisticsComponent implements OnInit {
 
   players: any = [{id: 1, name: "Fred"}];
   filtered_players_p1: any = [{id: 1, name: "Fred"}]
   filtered_players_p2: any = [{id: 1, name: "Fred"}]
-  statistic: any = [
-    // {title: "", line1: "", line2: "", line3: ""}, 
-    // {title: "", line1: "", line2: ""}, 
-    // {title: "", line1: "", line2: "", line3: ""}, 
-    // {title: "", line1: "", line2: ""}, 
-    // {title: "", line1: "", line2: "", line3: ""}, 
-    // {title: "", line1: "", line2: ""}
-  ];
+  statistic: any = [];
   firstInput: number = 0;
   secondInput: number = 0;
   myFilterP1: string = "";
@@ -76,12 +69,15 @@ export class PlayersComponent implements OnInit {
     {
       this.secondInput = this.filtered_players_p2[0].id;
     }
-      
-
   }
 
-  getPredictions(): void {
-    this.webService.getPredictions(this.firstInput, this.secondInput, "ALL")
+  getPlayerStatistics(p1: number): void {
+    this.webService.getIndividualStatistics(p1)
+        .subscribe(statistic => this.statistic = statistic);
+  }
+
+  getVsStatistics(p1: number, p2: number): void {
+    this.webService.getMatchStatistics(p1, p2)
         .subscribe(statistic => this.statistic = statistic);
   }
 

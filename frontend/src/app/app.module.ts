@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { PlayersComponent } from './players/players.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 import { HttpClientModule } from '@angular/common/http';
 
@@ -15,7 +16,8 @@ import { GoogleLoginProvider } from 'angularx-social-login';
 @NgModule({
   declarations: [
     AppComponent,
-    PlayersComponent
+    PlayersComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,
