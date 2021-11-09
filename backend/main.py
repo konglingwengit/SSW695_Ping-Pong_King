@@ -4,6 +4,8 @@ from predictions import win_prediction, total_points_prediction, number_of_games
 from predictions import games_decided_by_extra_points_prediction, third_game_winner_prediction
 from predictions import money_line_prediction
 from machine_learning.tennis import fetch_tournament
+from users import get_all_users, add_user, user_exists
+
 app = Flask(__name__)
 
 
@@ -76,6 +78,27 @@ def scrape():
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
+
+@app.route('/api/user', methods=['POST'])
+def user():
+    
+    failed = False
+    response = jsonify("User not found")
+    query_parameters = request.get_json()
+    try:
+        email = str(query_parameters['email'])
+    except:
+        failed = True
+    if not failed:
+        if user_exists(email):
+            response_text = "User already exists " + str(email)
+            response = jsonify(response_text)
+        else:
+            add_user(email)
+            response_text = "User created " + str(email)
+            response = jsonify(response_text)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

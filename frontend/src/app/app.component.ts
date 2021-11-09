@@ -2,7 +2,7 @@ import { Component,OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SocialAuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
-
+import { PlayerService } from './player.service';
 
 @Component({
   selector: 'app-root',
@@ -16,22 +16,36 @@ export class AppComponent implements OnInit {
   loginForm: FormGroup;
   socialUser: SocialUser;
   isLoggedin: boolean = false;  
+  loading: boolean = false;
   
   constructor(
     private formBuilder: FormBuilder, 
-    private socialAuthService: SocialAuthService
+    private socialAuthService: SocialAuthService,
+    private playerService: PlayerService
   ) { }
 
   ngOnInit() {
-    this.loginForm = this.formBuilder.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required]
-    });    
+    // this.loginForm = this.formBuilder.group({
+    //   email: ['', Validators.required],
+    //   password: ['', Validators.required]
+    // });    
     
     this.socialAuthService.authState.subscribe((user) => {
-      this.socialUser = user;
-      this.isLoggedin = (user != null);
-      console.log(this.socialUser);
+      if(user != null){
+        this.socialUser = user;
+        //console.log(this.socialUser);
+        this.loading = true;
+        this.playerService.addUser(user.email)
+          .subscribe(res => {
+            this.loading = false;
+            // this.isLoggedin = (user != null);
+            this.isLoggedin = true;
+            // console.log('res',res);
+          });
+      }
+      else{
+        this.isLoggedin = false;
+      }
     });
   }
 

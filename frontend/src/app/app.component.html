@@ -106,12 +106,12 @@ margin-top: 0px;
     </div>
     <div class="container" style="text-align: center;">
         <!-- <h2 class="text-center mb-5">Login with Google</h2> -->
-        <div *ngIf="isLoggedin === false">
+        <div *ngIf="isLoggedin === false && loading === false">
             <div>
                 <button type="button" (click)="loginWithGoogle()" class="btn btn-success">Login with Google</button>
             </div>
         </div>
-      
+        <div class="loader" *ngIf="loading"></div>
         <!-- <div *ngIf="isLoggedin === true">
           <div class="form-group">
             <label>First Name</label>
