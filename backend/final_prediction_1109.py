@@ -1,149 +1,315 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression 
+from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
-from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
 from pprint import pprint
-from sklearn.metrics import accuracy_score
-from sklearn.naive_bayes import GaussianNB
-from sklearn import metrics
 
+#inite df
+df_game = pd.read_csv(r'/Users/lingwenkong/Downloads/ML_table_tennis/final_table.csv')
+df_player = pd.read_csv(r'/Users/lingwenkong/Downloads/ML_table_tennis/player_table.csv')
 
+def get_avg_stats_last_n_games(player_id, game_table, n):
+    prev_game_df = game_table[(game_table['playerA']== int(player_id)) | (game_table['PlayerB']== int(player_id))].tail(n)
+    return prev_game_df
 
+# predict who wins
+label_who_win = df_game["who_win"]
+features = df_game[["playerA_win_rate","playerA_average_max_points_in_a_row","playerA_average_service_points_lost","playerA_average_biggest_lead","playerA_average_receiver_points_won","playerA_average_service_points_won","playerA_average_service_error",'playerA_average_comeback_loss', 'playerA_average_comeback_to_win',
+       'playerA_average_receiver_points_lost', 'playerA_average_points',
+       'playerB_win_rate', 'playerB_average_max_points_in_a_row',
+       'playerB_average_service_points_lost', 'playerB_average_biggest_lead',
+       'playerB_average_receiver_points_won',
+       'playerB_average_service_points_won', 'playerB_average_service_error',
+       'playerB_average_comeback_loss', 'playerB_average_comeback_to_win',
+       'playerB_average_receiver_points_lost', 'playerB_average_points']]
 
-#read data
-df = pd.read_csv(r'/Users/lingwenkong/Downloads/ML_table_tennis/final_table.csv')
-cols = ['playerA','PlayerB','who_win','Exact Number of Sets','Total Points','First Game Winner','Sets Decided by Extra Points']
-games_results = df[cols]
+x_train_who_win, x_test_who_win, y_train_who_win, y_test_who_win = train_test_split(features, label_who_win, test_size = 0.2)
 
-
-#process
-ind = games_results.drop(columns = 'who_win')
-res = games_results['who_win']
-x_train, x_test, y_train, y_test = train_test_split(ind, res, test_size = 0.2)
-
-# # Classification by Logistic regression
 
 # create a simple, non-parameterized Logistic Regression model
-model = LogisticRegression(random_state=42)
-model.fit(x_train, y_train)
+model_who_win = LogisticRegression(random_state=42)
+model_who_win.fit(x_train_who_win, y_train_who_win)
 
-y_pred = model.predict(x_test)
-#print(metrics.accuracy_score(y_test, y_pred))
-
-from pprint import pprint
-# Look at parameters used by our current forest
-#print('Parameters currently in use:\n')
-#pprint(model.get_params())
+y_pred_who_win = model_who_win.predict(x_test_who_win)
 
 # create complex Logistic Regression with max_iter=131 
-log_model = LogisticRegression(max_iter=131, verbose=2, random_state=42)
-log_model.fit(x_train, y_train)
-y_pred_log = log_model.predict(x_test)
-ans = (f'[{a}, 4,85, {b}, 1]')
+log_model_who_win = LogisticRegression(max_iter=131, verbose=2, random_state=42)
+log_model_who_win.fit(x_train_who_win, y_train_who_win)
+y_pred_log_who_win = log_model_who_win.predict(x_test_who_win)
+#print(metrics.accuracy_score(y_test_who_win, y_pred_log_who_win))
 
-# # Classificcation by Random forest model
-rf = RandomForestClassifier(random_state=42)
-rf.fit(x_train, y_train)
-y_pred_rf = rf.predict(x_test)
+#Predict Who Win
+def prediction_who_win(playerA_ID, playerB_ID, player_table):
+    
+    table_a = player_table[(player_table['playerID']== str(playerA_ID))]
+    table_b = player_table[(player_table['playerID']== str(playerB_ID))]
+    #if can't find player info
+    if(table_a.count == 0 or table_b.count == 0):
+        msg = "Invalid Player"
+        return msg
+    tmp_ab = pd.DataFrame()
+    tmp_ab_col = ['playerA_win_rate',
+     'playerA_average_max_points_in_a_row',
+     'playerA_average_service_points_lost',
+     'playerA_average_biggest_lead',
+     'playerA_average_receiver_points_won',
+     'playerA_average_service_points_won',
+     'playerA_average_service_error',
+     'playerA_average_comeback_loss',
+     'playerA_average_comeback_to_win',
+     'playerA_average_receiver_points_lost',
+     'playerA_average_points',
+     'playerB_win_rate',
+     'playerB_average_max_points_in_a_row',
+     'playerB_average_service_points_lost',
+     'playerB_average_biggest_lead',
+     'playerB_average_receiver_points_won',
+     'playerB_average_service_points_won',
+     'playerB_average_service_error',
+     'playerB_average_comeback_loss',
+     'playerB_average_comeback_to_win',
+     'playerB_average_receiver_points_lost',
+     'playerB_average_points']
 
-# # Classification by Gaussian Naive Bayes
-#Import Gaussian Naive Bayes model
+    tmp_ab_data = [0]*22
+    for x in range(0,11):
+        tmp_ab_data[x] = table_a.iat[0,x+1]
+    for x in range(11,22):
+        tmp_ab_data[x] = table_b.iat[0,x-10]
 
-#Create a Gaussian Classifier
-model = GaussianNB()
-# Train the model using the training sets
-model.fit(x_train,y_train)
-y_pred = model.predict(x_test)
+    pred_df = pd.DataFrame([tmp_ab_data], columns = tmp_ab_col)
+    pred_ab = log_model_who_win.predict(pred_df)
 
-#print(metrics.accuracy_score(y_test, y_pred))
+    if(int(pred_ab[0]) == 0):
+        return playerA_ID
+    else:
+        return playerB_ID
+
+#prediction_who_win(345228,345232,df_player)
+
+#Predict Exact Number of Games
+label_exact = df_game["Exact Number of Sets"]
+#prediction_fields = df_game[["who_win","Exact Number of Sets","Total Points","First Game Winner","Sets Decided by Extra Points"]]
+features = df_game[["playerA_win_rate","playerA_average_max_points_in_a_row","playerA_average_service_points_lost","playerA_average_biggest_lead","playerA_average_receiver_points_won","playerA_average_service_points_won","playerA_average_service_error",'playerA_average_comeback_loss', 'playerA_average_comeback_to_win',
+       'playerA_average_receiver_points_lost', 'playerA_average_points',
+       'playerB_win_rate', 'playerB_average_max_points_in_a_row',
+       'playerB_average_service_points_lost', 'playerB_average_biggest_lead',
+       'playerB_average_receiver_points_won',
+       'playerB_average_service_points_won', 'playerB_average_service_error',
+       'playerB_average_comeback_loss', 'playerB_average_comeback_to_win',
+       'playerB_average_receiver_points_lost', 'playerB_average_points']]
 
 
-# Look at parameters used by our current forest
-#print('Parameters currently in use:\n')
-#print(model.get_params())
+x_train_exact, x_test_exact, y_train_exact, y_test_exact = train_test_split(features, label_exact, test_size = 0.2)
+
+
+# create a simple, non-parameterized Logistic Regression model
+model_exact = LogisticRegression(random_state=42)
+model_exact.fit(x_train_exact, y_train_exact)
+
+y_pred_exact = model_exact.predict(x_test_exact)
 
 # create complex Logistic Regression with max_iter=131 
-log_model = LogisticRegression(max_iter=131, verbose=2, random_state=42)
-log_model.fit(x_train, y_train)
-y_pred_log = log_model.predict(x_test)
+log_model_exact = LogisticRegression(max_iter=131, verbose=2, random_state=42)
+log_model_exact.fit(x_train_exact, y_train_exact)
+y_pred_log_exact = log_model_exact.predict(x_test_exact)
 
-player_id_value_counts = games_results['playerA'].value_counts()
-valid_player_ids = [x for x in games_results['playerA'] if player_id_value_counts[x] > 16]
-ind = games_results.drop(columns = 'who_win')
-res = games_results['who_win']
+def prediction_exact(playerA_ID, playerB_ID, player_table):
+    
+    table_a = player_table[(player_table['playerID']== str(playerA_ID))]
+    table_b = player_table[(player_table['playerID']== str(playerB_ID))]
+    #if can't find player info
+    if(table_a.count == 0 or table_b.count == 0):
+        msg = "Invalid Player"
+        return msg
+    tmp_ab = pd.DataFrame()
+    tmp_ab_col = ['playerA_win_rate',
+     'playerA_average_max_points_in_a_row',
+     'playerA_average_service_points_lost',
+     'playerA_average_biggest_lead',
+     'playerA_average_receiver_points_won',
+     'playerA_average_service_points_won',
+     'playerA_average_service_error',
+     'playerA_average_comeback_loss',
+     'playerA_average_comeback_to_win',
+     'playerA_average_receiver_points_lost',
+     'playerA_average_points',
+     'playerB_win_rate',
+     'playerB_average_max_points_in_a_row',
+     'playerB_average_service_points_lost',
+     'playerB_average_biggest_lead',
+     'playerB_average_receiver_points_won',
+     'playerB_average_service_points_won',
+     'playerB_average_service_error',
+     'playerB_average_comeback_loss',
+     'playerB_average_comeback_to_win',
+     'playerB_average_receiver_points_lost',
+     'playerB_average_points']
 
-trainX, testX, trainY, testY = train_test_split(ind, res, test_size = 0.2)
-y_pred_log = log_model.predict(testX)
-who_wins = y_pred_log
+    tmp_ab_data = [0]*22
+    for x in range(0,11):
+        tmp_ab_data[x] = table_a.iat[0,x+1]
+    for x in range(11,22):
+        tmp_ab_data[x] = table_b.iat[0,x-10]
 
-games_results = games_results[games_results['playerA'].isin(valid_player_ids)]
+    pred_df = pd.DataFrame([tmp_ab_data], columns = tmp_ab_col)
+    pred_ab = log_model_exact.predict(pred_df)
 
-log_reg = LogisticRegression(solver='newton-cg', multi_class='multinomial')
-log_reg.fit(trainX, trainY)
-y_predE = log_reg.predict(testX)
+    return pred_ab[0]
+
+#prediction_exact(345228,345232,df_player)
 
 
-# if __name__ == '__main__':
-#     a = input('playerA id : ')
-#     b = input('playerB id : ')
-#     found = False
-#     for index, row in df.iterrows():
-#         if a == str(row["playerA"]) and b == str(row["PlayerB"]):
+#First Game Winner
+label_first_winner = df_game["First Game Winner"]
+#prediction_fields = df_game[["who_win","Exact Number of Sets","Total Points","First Game Winner","Sets Decided by Extra Points"]]
+features = df_game[["playerA_win_rate","playerA_average_max_points_in_a_row","playerA_average_service_points_lost","playerA_average_biggest_lead","playerA_average_receiver_points_won","playerA_average_service_points_won","playerA_average_service_error",'playerA_average_comeback_loss', 'playerA_average_comeback_to_win',
+       'playerA_average_receiver_points_lost', 'playerA_average_points',
+       'playerB_win_rate', 'playerB_average_max_points_in_a_row',
+       'playerB_average_service_points_lost', 'playerB_average_biggest_lead',
+       'playerB_average_receiver_points_won',
+       'playerB_average_service_points_won', 'playerB_average_service_error',
+       'playerB_average_comeback_loss', 'playerB_average_comeback_to_win',
+       'playerB_average_receiver_points_lost', 'playerB_average_points']]
 
-#             if row['who_win'] == 0:
-#                 who_win = a
-#             else:
-#                 who_win = b
 
-#             if row["First Game Winner"] == 0:
-#                 first_win = a
-#             else:
-#                 first_win = b
+x_train_first_winner, x_test_first_winner, y_train_first_winner, y_test_first_winner = train_test_split(features, label_first_winner, test_size = 0.2)
 
-#             print(f'Prediction fields {who_win}, {row["Exact Number of Sets"]}, {row["Total Points"]}, '
-#                   f'{first_win}, {row["Sets Decided by Extra Points"]} ')
+model_first_winner = LogisticRegression(random_state=42)
+model_first_winner.fit(x_train_exact, y_train_exact)
 
-#             found = True
-#             print('final result\n'
-#                   f'{who_win}, {row["Exact Number of Sets"]}, {row["Total Points"]}, '
-#                   f'{first_win}, {row["Sets Decided by Extra Points"]} ')
+y_pred_first_winner = model_first_winner.predict(x_test_first_winner)
 
-#             break
-#     if not found:
-#         print('[0,4,85,0,1]'
-#               '\n'
-#               f'[{a}, 4,85, {b}, 1]')
+# create complex Logistic Regression with max_iter=131 
+log_model_first_winner = LogisticRegression(max_iter=131, verbose=2, random_state=42)
+log_model_first_winner.fit(x_train_first_winner, y_train_first_winner)
+y_pred_log_first_winner = log_model_first_winner.predict(x_test_first_winner)
+#y_pred_log_first_winner[0]
 
-def predict(playerA_ID,playerB_ID):
-    status = False
-    a = str(playerA_ID)
-    b = str(playerB_ID)
-    ans = (f'[{a}, 4,85, {b}, 1]')
-           
-    for index, row in df.iterrows():
-        if a == str(row["playerA"]) and b == str(row["PlayerB"]):
+def prediction_first_winner(playerA_ID, playerB_ID, player_table):
+    
+    table_a = player_table[(player_table['playerID']== str(playerA_ID))]
+    table_b = player_table[(player_table['playerID']== str(playerB_ID))]
+    #if can't find player info
+    if(table_a.count == 0 or table_b.count == 0):
+        msg = "Invalid Player"
+        return msg
+    tmp_ab = pd.DataFrame()
+    tmp_ab_col = ['playerA_win_rate',
+     'playerA_average_max_points_in_a_row',
+     'playerA_average_service_points_lost',
+     'playerA_average_biggest_lead',
+     'playerA_average_receiver_points_won',
+     'playerA_average_service_points_won',
+     'playerA_average_service_error',
+     'playerA_average_comeback_loss',
+     'playerA_average_comeback_to_win',
+     'playerA_average_receiver_points_lost',
+     'playerA_average_points',
+     'playerB_win_rate',
+     'playerB_average_max_points_in_a_row',
+     'playerB_average_service_points_lost',
+     'playerB_average_biggest_lead',
+     'playerB_average_receiver_points_won',
+     'playerB_average_service_points_won',
+     'playerB_average_service_error',
+     'playerB_average_comeback_loss',
+     'playerB_average_comeback_to_win',
+     'playerB_average_receiver_points_lost',
+     'playerB_average_points']
 
-            if row['who_win'] == 0:
-                who_win = a
-            else:
-                who_win = b
+    tmp_ab_data = [0]*22
+    for x in range(0,11):
+        tmp_ab_data[x] = table_a.iat[0,x+1]
+    for x in range(11,22):
+        tmp_ab_data[x] = table_b.iat[0,x-10]
 
-            if row["First Game Winner"] == 0:
-                first_win = a
-            else:
-                first_win = b
+    pred_df = pd.DataFrame([tmp_ab_data], columns = tmp_ab_col)
+    pred_ab = log_model_exact.predict(pred_df)
+    
+    if(int(pred_ab[0]) == 0):
+        return playerA_ID
+    else:
+        return playerB_ID
+#prediction_first_winner(345228,345232,df_player)
 
-            return(f'{who_win}, {row["Exact Number of Sets"]}, {row["Total Points"]}, '
-                  f'{first_win}, {row["Sets Decided by Extra Points"]} ')
 
-            found = True
-            return('final result\n'
-                  f'{who_win}, {row["Exact Number of Sets"]}, {row["Total Points"]}, '
-                  f'{first_win}, {row["Sets Decided by Extra Points"]} ')
+#Sets Decided By Extra Point
+label_extra_point = df_game["Sets Decided by Extra Points"]
+#prediction_fields = df_game[["who_win","Exact Number of Sets","Total Points","First Game Winner","Sets Decided by Extra Points"]]
+features = df_game[["playerA_win_rate","playerA_average_max_points_in_a_row","playerA_average_service_points_lost","playerA_average_biggest_lead","playerA_average_receiver_points_won","playerA_average_service_points_won","playerA_average_service_error",'playerA_average_comeback_loss', 'playerA_average_comeback_to_win',
+       'playerA_average_receiver_points_lost', 'playerA_average_points',
+       'playerB_win_rate', 'playerB_average_max_points_in_a_row',
+       'playerB_average_service_points_lost', 'playerB_average_biggest_lead',
+       'playerB_average_receiver_points_won',
+       'playerB_average_service_points_won', 'playerB_average_service_error',
+       'playerB_average_comeback_loss', 'playerB_average_comeback_to_win',
+       'playerB_average_receiver_points_lost', 'playerB_average_points']]
 
-            break
-    if not status:
-        return ans
+x_train_extra_point, x_test_extra_point, y_train_extra_point, y_test_extra_point = train_test_split(features, label_extra_point, test_size = 0.2)
+
+model_extra_point = LogisticRegression(random_state=42)
+model_extra_point.fit(x_train_extra_point, y_train_extra_point)
+
+y_pred_extra_point = model_extra_point.predict(x_test_extra_point)
+
+# create complex Logistic Regression with max_iter=131 
+log_model_extra_point = LogisticRegression(max_iter=131, verbose=2, random_state=42)
+log_model_extra_point.fit(x_train_extra_point, y_train_extra_point)
+y_pred_log_extra_point = log_model_extra_point.predict(x_test_extra_point)
+#y_pred_log_first_winner[0]
+
+def prediction_extra_point(playerA_ID, playerB_ID, player_table):
+    
+    table_a = player_table[(player_table['playerID']== str(playerA_ID))]
+    table_b = player_table[(player_table['playerID']== str(playerB_ID))]
+    #if can't find player info
+    if(table_a.count == 0 or table_b.count == 0):
+        msg = "Invalid Player"
+        return msg
+    tmp_ab = pd.DataFrame()
+    tmp_ab_col = ['playerA_win_rate',
+     'playerA_average_max_points_in_a_row',
+     'playerA_average_service_points_lost',
+     'playerA_average_biggest_lead',
+     'playerA_average_receiver_points_won',
+     'playerA_average_service_points_won',
+     'playerA_average_service_error',
+     'playerA_average_comeback_loss',
+     'playerA_average_comeback_to_win',
+     'playerA_average_receiver_points_lost',
+     'playerA_average_points',
+     'playerB_win_rate',
+     'playerB_average_max_points_in_a_row',
+     'playerB_average_service_points_lost',
+     'playerB_average_biggest_lead',
+     'playerB_average_receiver_points_won',
+     'playerB_average_service_points_won',
+     'playerB_average_service_error',
+     'playerB_average_comeback_loss',
+     'playerB_average_comeback_to_win',
+     'playerB_average_receiver_points_lost',
+     'playerB_average_points']
+
+    tmp_ab_data = [0]*22
+    for x in range(0,11):
+        tmp_ab_data[x] = table_a.iat[0,x+1]
+    for x in range(11,22):
+        tmp_ab_data[x] = table_b.iat[0,x-10]
+
+    pred_df = pd.DataFrame([tmp_ab_data], columns = tmp_ab_col)
+    pred_ab = log_model_extra_point.predict(pred_df)
+    
+    return pred_ab[0]
+#prediction_extra_point(345228,345232,df_player)
+
+def prediction_all(playerA_ID, playerB_ID, player_table):
+    res = [prediction_who_win(playerA_ID, playerB_ID, player_table),
+          prediction_exact(playerA_ID, playerB_ID, player_table),
+           prediction_first_winner(playerA_ID, playerB_ID, player_table),
+           prediction_extra_point(playerA_ID, playerB_ID, player_table)]
+    return res
+
+#prediction_all(345228,345232,df_player)
+          
