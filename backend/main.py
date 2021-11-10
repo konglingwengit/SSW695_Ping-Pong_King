@@ -6,13 +6,13 @@ from predictions import money_line_prediction
 from machine_learning.tennis import fetch_tournament
 from users import get_all_users, add_user, user_exists
 from player_statistics import generate_player_statistics, get_player_stats, get_vs_stats
+from flask_cors import CORS
 app = Flask(__name__)
-
+cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:4200", "https://api-dot-ping-pong-king-666.uc.r.appspot.com"]}})
 
 @app.route('/')
 def hello():
     return render_template('index.html')
-
 
 @app.route('/api/predictions', methods=['GET'])
 def predictions():
@@ -80,7 +80,6 @@ def scrape():
 
 @app.route('/api/user', methods=['POST'])
 def user():
-    
     failed = False
     response = jsonify("User not found")
     query_parameters = request.get_json()
@@ -96,8 +95,8 @@ def user():
             add_user(email)
             response_text = "User created " + str(email)
             response = jsonify(response_text)
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        return response
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 @app.route('/api/genstats', methods=['POST'])
 def generate_player_stats():
