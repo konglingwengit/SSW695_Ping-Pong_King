@@ -8,7 +8,7 @@ from users import get_all_users, add_user, user_exists
 from player_statistics import generate_player_statistics, get_player_stats, get_vs_stats
 from flask_cors import CORS
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": ["https://api-dot-ping-pong-king-666.uc.r.appspot.com"]}})
+cors = CORS(app, resources={r"/api/*": {"origins": ["https://ping-pong-king-666.uc.r.appspot.com"]}})
 # "http://localhost:4200",
 
 @app.route('/')
