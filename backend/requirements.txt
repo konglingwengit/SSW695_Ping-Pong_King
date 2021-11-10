@@ -6,3 +6,4 @@ datetime
 google-cloud-datastore
 pytest
 pylint
+flask_cors
