@@ -4,12 +4,8 @@ from predictions import win_prediction, total_points_prediction, number_of_games
 from predictions import games_decided_by_extra_points_prediction, third_game_winner_prediction
 from predictions import money_line_prediction
 from machine_learning.tennis import fetch_tournament
-<<<<<<< HEAD
 from users import get_all_users, add_user, user_exists
-
-=======
 from player_statistics import generate_player_statistics, get_player_stats, get_vs_stats
->>>>>>> cd6f25c39af0c4edf9be40cd3e46faa3eea068ff
 app = Flask(__name__)
 
 
@@ -102,7 +98,7 @@ def user():
             response = jsonify(response_text)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
-        
+
 @app.route('/api/genstats', methods=['POST'])
 def generate_player_stats():
     failed = False

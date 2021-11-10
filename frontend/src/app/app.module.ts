@@ -10,8 +10,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
-import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
-import { GoogleLoginProvider } from 'angularx-social-login';
+import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider } from 'angularx-social-login';
+
 
 @NgModule({
   declarations: [
