@@ -399,7 +399,13 @@ def prediction_all(playerA_ID, playerB_ID, player_table):
            prediction_extra_point(playerA_ID, playerB_ID, player_table)]
     return res
 
-#prediction_all(345228,345232,df_player)
+# print(prediction_all(345228,345232,df_player))
+# print(prediction_all(345228,345230,df_player))
+# print(prediction_all(345230,345232,df_player))
+# print(prediction_all(345228,345226,df_player))
+# print(prediction_all(345226,345232,df_player))
+# print(prediction_all(345226,345230,df_player))
+
 
 
         
