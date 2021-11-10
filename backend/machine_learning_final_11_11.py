@@ -12,10 +12,6 @@ import math
 df_game = pd.read_csv(r'/Users/lingwenkong/Downloads/ML_table_tennis/final_table.csv')
 df_player = pd.read_csv(r'/Users/lingwenkong/Downloads/ML_table_tennis/player_table.csv')
 
-def get_avg_stats_last_n_games(player_id, game_table, n):
-    prev_game_df = game_table[(game_table['playerA']== int(player_id)) | (game_table['PlayerB']== int(player_id))].tail(n)
-    return prev_game_df
-
 # predict who wins
 label_who_win = df_game["who_win"]
 features = df_game[["playerA_win_rate","playerA_average_max_points_in_a_row","playerA_average_service_points_lost","playerA_average_biggest_lead","playerA_average_receiver_points_won","playerA_average_service_points_won","playerA_average_service_error",'playerA_average_comeback_loss', 'playerA_average_comeback_to_win',
