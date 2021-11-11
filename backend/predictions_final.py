@@ -186,6 +186,7 @@ def generate_data_frame_source_databases():
 def initialize_who_win():
     # predict who wins
     global log_model_who_win
+
     label_who_win = df_game["who_win"]
     features = df_game[
         ["playerA_win_rate", "playerA_average_max_points_in_a_row", "playerA_average_service_points_lost",
@@ -342,6 +343,9 @@ def initialize_total_points():
 
 # Predict Who Win
 def prediction_who_win(playerA_ID, playerB_ID):
+    if df_game is None:
+        initialize_predictions()
+
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
@@ -389,6 +393,9 @@ def prediction_who_win(playerA_ID, playerB_ID):
 
 # Predict Exact Number of Games
 def prediction_exact(playerA_ID, playerB_ID):
+    if df_game is None:
+        initialize_predictions()
+
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
@@ -433,6 +440,9 @@ def prediction_exact(playerA_ID, playerB_ID):
 
 # First Game Winner
 def prediction_first_winner(playerA_ID, playerB_ID):
+    if df_game is None:
+        initialize_predictions()
+
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
@@ -480,6 +490,9 @@ def prediction_first_winner(playerA_ID, playerB_ID):
 
 # Sets Decided By Extra Point
 def prediction_extra_point(playerA_ID, playerB_ID):
+    if df_game is None:
+        initialize_predictions()
+
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
@@ -561,6 +574,9 @@ def plot_regression_line(x, y, b):
 
 
 def prediction_total_points(playerA_ID, playerB_ID):
+    if df_game is None:
+        initialize_predictions()
+
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
