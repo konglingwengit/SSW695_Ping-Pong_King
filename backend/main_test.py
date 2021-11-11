@@ -35,30 +35,30 @@ def test_main_predictions():
     # r = client.get('/api/predictions?prediction=WINNER&p1=99&p2=2')
     # assert 'Invalid' in r.data.decode('utf-8')
 
-    r = client.get('/api/predictions?prediction=THIRD_GAME&p1=1&p2=99')
-    returned_data = r.get_json()
-    assert returned_data['line1'] == "Samuel" or returned_data['line1'] == "George"
-
-    r = client.get('/api/predictions?prediction=THIRD_GAME&p1=1&p2=2')
-    assert 'Invalid' in r.data.decode('utf-8')
-
-    r = client.get('/api/predictions?prediction=NUMBER_OF_GAMES&p1=1&p2=99')
-    returned_data = r.get_json()
-    assert 3 <= int(returned_data['line1']) <= 5
-
-    r = client.get('/api/predictions?prediction=NUMBER_OF_GAMES&p1=1&p2=2')
-    assert 'Invalid' in r.data.decode('utf-8')
-
-    r = client.get('/api/predictions?prediction=TOTAL_POINTS&p1=1&p2=99')
-    returned_data = r.get_json()
-    assert int(returned_data['line1']) >= 33
-
-    r = client.get('/api/predictions?prediction=TOTAL_POINTS&p1=1&p2=2')
-    assert 'Invalid' in r.data.decode('utf-8')
-
-    r = client.get('/api/predictions?prediction=EXTRA_POINTS&p1=1&p2=99')
-    returned_data = r.get_json()
-    assert 0 <= int(returned_data['line1']) <= 5
-
-    r = client.get('/api/predictions?prediction=EXTRA_POINTS&p1=1&p2=2')
-    assert 'Invalid' in r.data.decode('utf-8')
+    # r = client.get('/api/predictions?prediction=THIRD_GAME&p1=1&p2=99')
+    # returned_data = r.get_json()
+    # assert returned_data['line1'] == "Samuel" or returned_data['line1'] == "George"
+    #
+    # r = client.get('/api/predictions?prediction=THIRD_GAME&p1=1&p2=2')
+    # assert 'Invalid' in r.data.decode('utf-8')
+    #
+    # r = client.get('/api/predictions?prediction=NUMBER_OF_GAMES&p1=1&p2=99')
+    # returned_data = r.get_json()
+    # assert 3 <= int(returned_data['line1']) <= 5
+    #
+    # r = client.get('/api/predictions?prediction=NUMBER_OF_GAMES&p1=1&p2=2')
+    # assert 'Invalid' in r.data.decode('utf-8')
+    #
+    # r = client.get('/api/predictions?prediction=TOTAL_POINTS&p1=1&p2=99')
+    # returned_data = r.get_json()
+    # assert int(returned_data['line1']) >= 33
+    #
+    # r = client.get('/api/predictions?prediction=TOTAL_POINTS&p1=1&p2=2')
+    # assert 'Invalid' in r.data.decode('utf-8')
+    #
+    # r = client.get('/api/predictions?prediction=EXTRA_POINTS&p1=1&p2=99')
+    # returned_data = r.get_json()
+    # assert 0 <= int(returned_data['line1']) <= 5
+    #
+    # r = client.get('/api/predictions?prediction=EXTRA_POINTS&p1=1&p2=2')
+    # assert 'Invalid' in r.data.decode('utf-8')

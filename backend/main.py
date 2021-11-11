@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify, render_template
 from players import get_all_players
 from predictions import win_prediction, total_points_prediction, number_of_games_prediction
-from predictions import games_decided_by_extra_points_prediction, third_game_winner_prediction
+from predictions import games_decided_by_extra_points_prediction, first_game_winner_prediction
 from predictions import money_line_prediction
 from machine_learning.tennis import fetch_tournament
 from users import get_all_users, add_user, user_exists
 from player_statistics import generate_player_statistics, get_player_stats, get_vs_stats
+from predictions_final import initialize_predictions
 app = Flask(__name__)
 
 
@@ -33,7 +34,7 @@ def predictions():
         if prediction == "NUMBER_OF_GAMES":
             response = number_of_games_prediction(first_player, second_player)
         if prediction == "THIRD_GAME":
-            response = third_game_winner_prediction(first_player, second_player)
+            response = first_game_winner_prediction(first_player, second_player)
         if prediction == "EXTRA_POINTS":
             response = games_decided_by_extra_points_prediction(first_player, second_player)
         if prediction == "ALL":
@@ -41,9 +42,8 @@ def predictions():
             response.append(win_prediction(first_player, second_player))
             response.append(total_points_prediction(first_player, second_player))
             response.append(number_of_games_prediction(first_player, second_player))
-            response.append(third_game_winner_prediction(first_player, second_player))
+            response.append(first_game_winner_prediction(first_player, second_player))
             response.append(games_decided_by_extra_points_prediction(first_player, second_player))
-            response.append(money_line_prediction(first_player, second_player))
 
     response = jsonify(response)
     response.headers.add("Access-Control-Allow-Origin", "*")
@@ -143,4 +143,5 @@ def vs_stats():
 
 
 if __name__ == '__main__':
+    initialize_predictions()
     app.run(host='127.0.0.1', port=8080, debug=True)

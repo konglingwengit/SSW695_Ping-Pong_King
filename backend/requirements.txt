@@ -6,3 +6,7 @@ datetime
 google-cloud-datastore
 pytest
 pylint
+pandas
+numpy
+sklearn
+matplotlib
