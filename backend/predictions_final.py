@@ -16,9 +16,12 @@ log_model_exact = None
 log_model_first_winner = None
 log_model_extra_point = None
 b_coef = None
+player_column_names = None
+game_column_names = None
 
 
 def initialize_predictions():
+    initialize_columns()
     initialize_data_frames()
     initialize_who_win()
     initialize_exact_number()
@@ -27,41 +30,15 @@ def initialize_predictions():
     initialize_total_points()
 
 
-def initialize_data_frames():
-    # init. df
-    global df_game
-    global df_player
+def initialize_columns():
+    global player_column_names
+    global game_column_names
 
     player_column_names = ['playerID', 'win_rate', 'average_max_points_in_a_row', 'average_service_points_lost',
                            'average_biggest_lead', 'average_receiver_points_won', 'average_service_points_won',
                            'average_service_error', 'average_comeback_loss', 'average_comeback_to_win',
                            'average_receiver_points_lost', 'average_points']
 
-    print('Activating datastore')
-    client = datastore.Client()
-
-    query = client.query(kind='Player_Statistic_Data')
-    print('Fetching player data')
-    player_data = list(query.fetch())
-    print('Player data fetched')
-
-    data_array = np.zeros([len(player_column_names), len(player_data)])
-    for idx, player in enumerate(player_data):
-        data_array[0, idx] = player.id
-        data_array[1, idx] = player['all_matches']['total_wins'] / player['all_matches']['total_matches']
-        for col in range(2, len(player_column_names)):
-            data_array[col, idx] = player['all_matches']['overall'][player_column_names[col]]
-    df_player = pd.DataFrame(data_array.transpose(), index=range(0, len(player_data)), columns=player_column_names)
-
-    # Use a dictionary for direct access to individual players' data
-    player_data_dict = dict()
-    for player in player_data:
-        player_data_dict[player.key.id] = player
-
-    print('Fetching game data')
-    query = client.query(kind='Event_Data')
-    event_data = list(query.fetch())
-    print('Game data fetched')
 
     game_column_names = ['playerA', 'playerB', 'who_win', 'Aset1', 'Aset2', 'Aset3', 'Aset4', 'Aset5',
                          'Bset1', 'Bset2', 'Bset3', 'Bset4', 'Bset5', 'Exact Number of Sets', 'Total Points',
@@ -72,53 +49,138 @@ def initialize_data_frames():
             if idx != 0:
                 game_column_names.append(player + '_' + column)
 
+
+
+def initialize_data_frames():
+    # init. df
+    global df_game
+    global df_player
+
+    print('Activating datastore')
+    client = datastore.Client()
+
+    query = client.query(kind='Player_Model_Data')
+    print('Fetching player data')
+    player_data = list(query.fetch())
+    print('Player data fetched')
+
+    data_array = np.zeros([len(player_column_names), len(player_data)])
+    for idx, player in enumerate(player_data):
+        for col in range(0, len(player_column_names)):
+            data_array[col, idx] = player[player_column_names[col]]
+    rows = len(player_data)
+    player_data = None
+    df_player = pd.DataFrame(data_array.transpose(), index=range(0, rows), columns=player_column_names)
+    data_array = None
+
+    print('Fetching game data')
+    query = client.query(kind='Game_Model_Data')
+    event_data = list(query.fetch())
+    print('Game data fetched')
+
     data_array = np.zeros([len(game_column_names), len(event_data)])
     for idx, game in enumerate(event_data):
-        data_array[0, idx] = game['homeTeam']
-        data_array[1, idx] = game['awayTeam']
+        for col in range(0, len(game_column_names)):
+            data_array[col, idx] = game[game_column_names[col]]
+    rows = len(event_data)
+    event_data = None
+    df_game = pd.DataFrame(data_array.transpose(), index=range(0, rows), columns=game_column_names)
+    data_array = None
+
+
+# Can only run from a local host due to using preposterous amounts of memory
+def generate_data_frame_source_databases():
+    print('Activating datastore')
+    client = datastore.Client()
+
+    print('Clearing player model data')
+    query = client.query(kind='Player_Model_Data')
+    old_player_model = list(query.fetch())
+    for player in old_player_model:
+        client.delete(player.key)
+
+    print('Clearing game model data')
+    query = client.query(kind='Game_Model_Data')
+    old_game_model = list(query.fetch())
+    for idx, game in enumerate(old_game_model):
+        print('Deleting element ' + str(idx) + ' of ' + str(len(old_game_model)))
+        client.delete(game.key)
+
+    query = client.query(kind='Player_Statistic_Data')
+    print('Fetching player statistic data')
+    player_data = list(query.fetch())
+    print('Player data fetched')
+
+    print('Fetching event data')
+    query = client.query(kind='Event_Data')
+    event_data = list(query.fetch())
+    print('Game data fetched')
+
+    for idx, player in enumerate(player_data):
+        entity = datastore.entity.Entity()
+        entity.key = client.key('Player_Model_Data')
+        entity[player_column_names[0]] = player.id
+        entity[player_column_names[1]] = player['all_matches']['total_wins'] / player['all_matches']['total_matches']
+        for col in range(2, len(player_column_names)):
+            entity[player_column_names[col]] = player['all_matches']['overall'][player_column_names[col]]
+        print('Writing player ' + str(idx) + ' of ' + str(len(player_data)))
+        client.put(entity)
+
+    # Use a dictionary for direct access to individual players' data
+    player_data_dict = dict()
+    for player in player_data:
+        player_data_dict[player.key.id] = player
+
+    for idx, game in enumerate(event_data):
+        entity = datastore.entity.Entity()
+        entity.key = client.key('Game_Model_Data')
+        entity[game_column_names[0]] = game['homeTeam']
+        entity[game_column_names[1]] = game['awayTeam']
         if game['winnerCode'] == 1:
-            data_array[2, idx] = 0
+            entity[game_column_names[2]] = 0
         else:
-            data_array[2, idx] = 1
+            entity[game_column_names[2]] = 1
         for a in range(0, 5):
             try:
-                data_array[3 + a, idx] = game['homeScore']['period' + str(a)]
+                entity[game_column_names[3 + a]] = game['homeScore']['period' + str(a+1)]
             except KeyError:
-                data_array[3 + a, idx] = 0
+                entity[game_column_names[3 + a]] = 0
         for b in range(0, 5):
             try:
-                data_array[8 + b, idx] = game['awayScore']['period' + str(b)]
+                entity[game_column_names[8 + b]] = game['awayScore']['period' + str(b+1)]
             except KeyError:
-                data_array[8 + b, idx] = 0
+                entity[game_column_names[8 + b]] = 0
         try:
-            data_array[13, idx] = game['awayScore']['normaltime'] + game['homeScore']['normaltime']
+            entity[game_column_names[13]] = game['awayScore']['normaltime'] + game['homeScore']['normaltime']
         except KeyError:
-            data_array[13, idx] = 3
+            entity[game_column_names[13]] = 3
+        entity[game_column_names[14]] = 0
         for ab in range(3, 13):
-            data_array[14, idx] += data_array[ab, idx]
+            entity[game_column_names[14]] += entity[game_column_names[ab]]
         try:
             if game['homeScore']['normaltime'] > game['awayScore']['normaltime']:
-                data_array[15, idx] = 0
+                entity[game_column_names[15]] = 0
             else:
-                data_array[15, idx] = 1
+                entity[game_column_names[15]] = 1
         except KeyError:
-            data_array[15, idx] = 0
+            entity[game_column_names[15]] = 0
+        entity[game_column_names[16]] = 0
         try:
             for ab in range(1, 6):
                 if game['homeScore']['period' + str(ab)] > 11 or game['awayScore']['period' + str(ab)] > 11:
-                    data_array[16, idx] += 1
+                    entity[game_column_names[16]] += 1
         except KeyError:
             pass
         player_columns = len(player_column_names)-1
         for col in range(17, 17 + player_columns):
-            data_array[col, idx] = \
+            entity[game_column_names[col]] = \
                 player_data_dict[int(game['homeTeam'])]['all_matches']['overall'][player_column_names[col - 17 + 1]]
         for col in range(17 + player_columns, 17 + 2 * player_columns):
-            data_array[col, idx] = \
+            entity[game_column_names[col]] = \
                 player_data_dict[int(game['homeTeam'])]['all_matches']['overall'][
                     player_column_names[col - 17 - player_columns + 1]]
-
-    df_game = pd.DataFrame(data_array.transpose(), index=range(0, len(event_data)), columns=game_column_names)
+        print('Writing game ' + str(idx) + ' of ' + str(len(event_data)))
+        client.put(entity)
 
 
 def initialize_who_win():
@@ -531,5 +593,7 @@ def prediction_all(playerA_ID, playerB_ID):
 
 
 if __name__ == '__main__':
+    # initialize_columns()
+    # generate_data_frame_source_databases()
     initialize_predictions()
     prediction_all(345226, 345227)
