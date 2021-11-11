@@ -10,3 +10,4 @@ pandas
 numpy
 sklearn
 matplotlib
+flask_cors
