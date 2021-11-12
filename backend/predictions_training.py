@@ -65,6 +65,10 @@ def initialize_data_frames():
 
 # Can only run from a local host due to using preposterous amounts of memory
 def generate_data_frame_source_databases():
+    global player_column_names
+    global game_column_names
+    player_column_names, game_column_names = initialize_columns()
+
     print('Activating datastore')
     client = datastore.Client()
 
@@ -157,7 +161,7 @@ def generate_data_frame_source_databases():
                 player_data_dict[int(game['homeTeam'])]['all_matches']['overall'][player_column_names[col - 17 + 1]]
         for col in range(17 + player_columns, 17 + 2 * player_columns):
             entity[game_column_names[col]] = \
-                player_data_dict[int(game['homeTeam'])]['all_matches']['overall'][
+                player_data_dict[int(game['awayTeam'])]['all_matches']['overall'][
                     player_column_names[col - 17 - player_columns + 1]]
         print('Writing game ' + str(idx) + ' of ' + str(len(event_data)))
         client.put(entity)
@@ -165,8 +169,6 @@ def generate_data_frame_source_databases():
 
 def initialize_who_win():
     # predict who wins
-    global log_model_who_win
-
     label_who_win = df_game["who_win"]
     features = df_game[
         ["playerA_win_rate", "playerA_average_max_points_in_a_row", "playerA_average_service_points_lost",
@@ -200,7 +202,6 @@ def initialize_who_win():
 
 
 def initialize_exact_number():
-    global log_model_exact
     # Exact number of games initialization
     label_exact = df_game["Exact Number of Sets"]
     # prediction_fields = df_game[["who_win","Exact Number of Sets","Total Points","First Game Winner","Sets Decided by Extra Points"]]
@@ -235,7 +236,6 @@ def initialize_exact_number():
 
 
 def initialize_first_winner():
-    global log_model_first_winner
     # first game winner
     label_first_winner = df_game["First Game Winner"]
     # prediction_fields = df_game[["who_win","Exact Number of Sets","Total Points","First Game Winner","Sets Decided by Extra Points"]]
@@ -271,7 +271,6 @@ def initialize_first_winner():
 
 # initialize extra point prediction
 def initialize_extra_point():
-    global log_model_extra_point
     label_extra_point = df_game["Sets Decided by Extra Points"]
     # prediction_fields = df_game[["who_win","Exact Number of Sets","Total Points","First Game Winner","Sets Decided by Extra Points"]]
     features = df_game[
