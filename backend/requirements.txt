@@ -11,3 +11,4 @@ numpy
 sklearn
 matplotlib
 flask_cors
+pickle
