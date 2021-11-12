@@ -13,7 +13,7 @@ def win_prediction(first_player: str, second_player: str):
             "title": "Winning Player",
             "line1": winning_player
         }
-    except:
+    except ValueError:
         prediction = {
             "title": "Winning Player",
             "line1": "Prediction Failed with message " + str(results)
@@ -25,11 +25,17 @@ def total_points_prediction(first_player: str, second_player: str):
     results = prediction_total_points(int(first_player), int(second_player))
     try:
         total_points = int(results)
-        prediction = {
-            "title": "Total Points",
-            "line1": total_points
-        }
-    except:
+        if total_points == 1:
+            prediction = {
+                "title": "Total Points",
+                "line1": "79 points or more"
+            }
+        else:
+            prediction = {
+                "title": "Total Points",
+                "line1": "Fewer than 79 points"
+            }
+    except ValueError:
         prediction = {
             "title": "Total Points",
             "line1": "Prediction Failed with message " + str(results)
@@ -45,7 +51,7 @@ def number_of_games_prediction(first_player: str, second_player: str):
             "title": "Number of Games",
             "line1": number_of_games
         }
-    except:
+    except ValueError:
         prediction = {
             "title": "Number of Games",
             "line1": "Prediction Failed with message " + str(results)
@@ -62,7 +68,7 @@ def first_game_winner_prediction(first_player: str, second_player: str):
             "title": "First Game Winner",
             "line1": winning_player
         }
-    except:
+    except ValueError:
         prediction = {
             "title": "First Game Winner",
             "line1": "Prediction Failed with message " + str(results)
@@ -78,7 +84,7 @@ def games_decided_by_extra_points_prediction(first_player: str, second_player: s
             "title": "Games Decided By Extra Points",
             "line1": number_of_games
         }
-    except:
+    except ValueError:
         prediction = {
             "title": "Games Decided By Extra Points",
             "line1": "Prediction Failed with message " + str(results)
