@@ -3,5 +3,9 @@ env: flex
 service: default
 threadsafe: true
 
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 3
+
 env_variables:
   API_URL: "https://api-dot-ping-pong-king-666.uc.r.appspot.com/api"
