@@ -5,6 +5,8 @@ from sklearn.linear_model import LogisticRegression
 from google.cloud import datastore
 import pickle
 from predictions_final import initialize_columns
+import matplotlib.pyplot as plt
+
 
 df_game = None
 df_player = None
@@ -127,9 +129,14 @@ def generate_data_frame_source_databases():
             entity[game_column_names[13]] = game['awayScore']['normaltime'] + game['homeScore']['normaltime']
         except KeyError:
             entity[game_column_names[13]] = 3
-        entity[game_column_names[14]] = 0
+        total_points = 0
         for ab in range(3, 13):
-            entity[game_column_names[14]] += entity[game_column_names[ab]]
+            total_points += entity[game_column_names[ab]]
+        # Change total points from an actual sum to 0 if under 78.5, 1 if over
+        if total_points < 78.5:
+            entity[game_column_names[14]] = 0
+        else:
+            entity[game_column_names[14]] = 1
         try:
             if game['homeScore']['normaltime'] > game['awayScore']['normaltime']:
                 entity[game_column_names[15]] = 0
@@ -300,52 +307,56 @@ def initialize_extra_point():
 
 def initialize_total_points():
     # Predict Total Points
-    global b_coef
-    # Training Model
-    tmp_list = [0] * 17551
 
-    for i in range(0, 17551):
-        tmp_total = int(df_game.iat[i, 14])
-        # print("tmp_total is ", tmp_total)
-        avg_attri = 0.0
-        tmp_ele = [0, 0]
-        for x in range(17, 39):
-            avg_attri = avg_attri + float(df_game.iat[i, x] * 10000)
-            # tmp_ele = [avg_attri,tmp_total]
-        tmp_ele = [avg_attri, tmp_total]
-        tmp_list[i] = tmp_ele
+    label_total_points = df_game["Total Points"]
+    # prediction_fields = df_game[["who_win","Exact Number of Sets","Total Points","First Game Winner","Sets Decided by Extra Points"]]
+    features = df_game[
+        ["playerA_win_rate", "playerA_average_max_points_in_a_row", "playerA_average_service_points_lost",
+         "playerA_average_biggest_lead", "playerA_average_receiver_points_won", "playerA_average_service_points_won",
+         "playerA_average_service_error", 'playerA_average_comeback_loss', 'playerA_average_comeback_to_win',
+         'playerA_average_receiver_points_lost', 'playerA_average_points',
+         'playerB_win_rate', 'playerB_average_max_points_in_a_row',
+         'playerB_average_service_points_lost', 'playerB_average_biggest_lead',
+         'playerB_average_receiver_points_won',
+         'playerB_average_service_points_won', 'playerB_average_service_error',
+         'playerB_average_comeback_loss', 'playerB_average_comeback_to_win',
+         'playerB_average_receiver_points_lost', 'playerB_average_points']]
 
-    x_array = [0] * 17551
-    y_array = [0] * 17551
-    for i in range(0, 17551):
-        x_array[i] = tmp_list[i][0]
-        y_array[i] = tmp_list[i][1]
+    x_train_total_points, x_test_total_points, y_train_total_points, y_test_total_points = train_test_split(features,
+                                                                                                            label_total_points,
+                                                                                                            test_size=0.2)
 
-    x_array = np.array(x_array)
-    y_array = np.array(y_array)
-    b_coef = estimate_coef(x_array, y_array)
+    model_total_points = LogisticRegression(random_state=42)
+    model_total_points.fit(x_train_total_points, y_train_total_points)
 
-    with open('./data/b_coef.pickle', 'wb') as f:
-        pickle.dump(b_coef, f)
+    y_pred_total_points = model_total_points.predict(x_test_total_points)
+
+    # create complex Logistic Regression with max_iter=131
+    log_model_total_points = LogisticRegression(max_iter=131, verbose=2, random_state=42)
+    log_model_total_points.fit(x_train_total_points, y_train_total_points)
+    y_pred_log_total_points = log_model_total_points.predict(x_test_total_points)
+
+    with open('./data/log_model_total_points.pickle', 'wb') as f:
+        pickle.dump(log_model_total_points, f)
 
 
-def estimate_coef(x, y):
-    # number of observations/points
-    n = np.size(x)
+def plot_regression_line(x, y, b):
+    # plotting the actual points as scatter plot
+    plt.scatter(x, y, color="m",
+                marker="o", s=30)
 
-    # mean of x and y vector
-    m_x = np.mean(x)
-    m_y = np.mean(y)
+    # predicted response vector
+    y_pred = b[0] + b[1] * x
 
-    # calculating cross-deviation and deviation about x
-    SS_xy = np.sum(y * x) - n * m_y * m_x
-    SS_xx = np.sum(x * x) - n * m_x * m_x
+    # plotting the regression line
+    plt.plot(x, y_pred, color="g")
 
-    # calculating regression coefficients
-    b_1 = SS_xy / SS_xx
-    b_0 = m_y - b_1 * m_x
+    # putting labels
+    plt.xlabel('x')
+    plt.ylabel('y')
 
-    return b_0, b_1
+    # function to show plot
+    plt.show()
 
 
 if __name__ == '__main__':

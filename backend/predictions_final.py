@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 from pprint import pprint
-import matplotlib.pyplot as plt
 from sklearn import linear_model
 import math
 from google.cloud import datastore
@@ -15,7 +14,7 @@ log_model_who_win = None
 log_model_exact = None
 log_model_first_winner = None
 log_model_extra_point = None
-b_coef = None
+log_model_total_points = None
 player_column_names = None
 game_column_names = None
 
@@ -29,7 +28,7 @@ def initialize_predictions():
 
 
 def initialize_data_from_machine_models():
-    global b_coef
+    global log_model_total_points
     global log_model_who_win
     global log_model_exact
     global log_model_first_winner
@@ -42,8 +41,8 @@ def initialize_data_from_machine_models():
         log_model_first_winner = pickle.load(f)
     with open('./data/log_model_extra_point.pickle', 'rb') as f:
         log_model_extra_point = pickle.load(f)
-    with open('./data/b_coef.pickle', 'rb') as f:
-        b_coef = pickle.load(f)
+    with open('./data/log_model_total_points.pickle', 'rb') as f:
+        log_model_total_points = pickle.load(f)
 
 
 def initialize_columns():
@@ -282,44 +281,6 @@ def prediction_extra_point(playerA_ID, playerB_ID):
     return pred_ab[0]
 
 
-def estimate_coef(x, y):
-    # number of observations/points
-    n = np.size(x)
-
-    # mean of x and y vector
-    m_x = np.mean(x)
-    m_y = np.mean(y)
-
-    # calculating cross-deviation and deviation about x
-    SS_xy = np.sum(y * x) - n * m_y * m_x
-    SS_xx = np.sum(x * x) - n * m_x * m_x
-
-    # calculating regression coefficients
-    b_1 = SS_xy / SS_xx
-    b_0 = m_y - b_1 * m_x
-
-    return (b_0, b_1)
-
-
-def plot_regression_line(x, y, b):
-    # plotting the actual points as scatter plot
-    plt.scatter(x, y, color="m",
-                marker="o", s=30)
-
-    # predicted response vector
-    y_pred = b[0] + b[1] * x
-
-    # plotting the regression line
-    plt.plot(x, y_pred, color="g")
-
-    # putting labels
-    plt.xlabel('x')
-    plt.ylabel('y')
-
-    # function to show plot
-    plt.show()
-
-
 def prediction_total_points(playerA_ID, playerB_ID):
     if df_player is None:
         initialize_predictions()
@@ -330,20 +291,41 @@ def prediction_total_points(playerA_ID, playerB_ID):
     if (table_a.count == 0 or table_b.count == 0):
         msg = "Invalid Player"
         return msg
-    sum_a = 0.0
-    sum_b = 0.0
-    sum_ab = 0.0
 
-    for i in range(1, 12):
-        sum_a = sum_a + float(table_a.iat[0, i]) * 10000
-        sum_b = sum_b + float(table_b.iat[0, i]) * 10000
+    tmp_ab = pd.DataFrame()
+    tmp_ab_col = ['playerA_win_rate',
+                  'playerA_average_max_points_in_a_row',
+                  'playerA_average_service_points_lost',
+                  'playerA_average_biggest_lead',
+                  'playerA_average_receiver_points_won',
+                  'playerA_average_service_points_won',
+                  'playerA_average_service_error',
+                  'playerA_average_comeback_loss',
+                  'playerA_average_comeback_to_win',
+                  'playerA_average_receiver_points_lost',
+                  'playerA_average_points',
+                  'playerB_win_rate',
+                  'playerB_average_max_points_in_a_row',
+                  'playerB_average_service_points_lost',
+                  'playerB_average_biggest_lead',
+                  'playerB_average_receiver_points_won',
+                  'playerB_average_service_points_won',
+                  'playerB_average_service_error',
+                  'playerB_average_comeback_loss',
+                  'playerB_average_comeback_to_win',
+                  'playerB_average_receiver_points_lost',
+                  'playerB_average_points']
 
-    sum_ab = sum_a + sum_b
-    pred_total_points = sum_ab * b_coef[1] + b_coef[0]
-    pred_total_floor = math.floor(pred_total_points)
-    diff = (pred_total_points - pred_total_floor) * 50
+    tmp_ab_data = [0] * 22
+    for x in range(0, 11):
+        tmp_ab_data[x] = table_a.iat[0, x + 1]
+    for x in range(11, 22):
+        tmp_ab_data[x] = table_b.iat[0, x - 10]
 
-    return math.floor(pred_total_points + diff)
+    pred_df = pd.DataFrame([tmp_ab_data], columns=tmp_ab_col)
+    pred_ab = log_model_total_points.predict(pred_df)
+
+    return pred_ab[0]
 
 
 def prediction_all(playerA_ID, playerB_ID):
