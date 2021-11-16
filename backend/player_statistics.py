@@ -167,30 +167,48 @@ def get_vs_stats(player_1_id, player_2_id):
         p1_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_1_id)))
         p2_statistic_data = client.get(client.key('Player_Statistic_Data', int(player_2_id)))
 
-        output_list.append([{'name': 'Rating', 'data': round(p1_statistic_data['glicko_rating']['rating'], 0)},
-                            {'name': 'Total Matches Played', 'data': p1_statistic_data['all_matches']['total_matches']},
-                            {'name': 'Total Matches Won', 'data': p1_statistic_data['all_matches']['total_wins']}])
-        for i in range(0, 6):
-            add_random_stat(output_list[0], p1_statistic_data)
-
-        matches = 0
-        first_wins = 0
-        second_wins = 0
         if str(player_2_id) in p1_statistic_data['specific_opponent']:
+            p1_data = p1_statistic_data['specific_opponent'][str(player_2_id)]['overall']
+            p2_data = p2_statistic_data['specific_opponent'][str(player_1_id)]['overall']
             matches = p1_statistic_data['specific_opponent'][str(player_2_id)]['total_matches']
             first_wins = p1_statistic_data['specific_opponent'][str(player_2_id)]['total_wins']
             second_wins = p2_statistic_data['specific_opponent'][str(player_1_id)]['total_wins']
-        output_list.append([{'name': 'Versus Matches Played', 'data': matches},
-                            {'name': 'First Player Matches Won', 'data': first_wins},
-                            {'name': 'Second Player Matches Won', 'data': second_wins}])
-
-        output_list.append([{'name': 'Rating', 'data': round(p2_statistic_data['glicko_rating']['rating'], 0)},
-                            {'name': 'Total Matches Played', 'data': p2_statistic_data['all_matches']['total_matches']},
-                            {'name': 'Total Matches Won', 'data': p2_statistic_data['all_matches']['total_wins']}])
-        for i in range(0, 6):
-            add_random_stat(output_list[2], p2_statistic_data)
+            output_list.append({'name': 'Rating',
+                                'data_p1': round(p1_statistic_data['glicko_rating']['rating']),
+                                'data_p2': round(p2_statistic_data['glicko_rating']['rating'])})
+            output_list.append({'name': 'Total Matches',
+                                'data_p1': matches,
+                                'data_p2': matches})
+            output_list.append({'name': 'Total Matches Won',
+                                'data_p1': first_wins,
+                                'data_p2': second_wins})
+            output_list.append({'name': 'Total Games Won',
+                                'data_p1': p1_data['total_games_won'],
+                                'data_p2': p2_data['total_games_won']})
+            output_list.append({'name': 'Total Games Lost',
+                                'data_p1': p1_data['total_games_played'] - p1_data['total_games_won'],
+                                'data_p2': p2_data['total_games_played'] - p2_data['total_games_won']})
+            output_list.append({'name': 'Total Points Scored',
+                                'data_p1': p1_data['total_player_points'],
+                                'data_p2': p2_data['total_player_points']})
+            output_list.append({'name': 'Service Points Scored',
+                                'data_p1': p1_data['sum_of_service_points_won'],
+                                'data_p2': p2_data['sum_of_service_points_won']})
+            output_list.append({'name': 'Receiving Points Scored',
+                                'data_p1': p1_data['sum_of_receiver_points_won'],
+                                'data_p2': p2_data['sum_of_receiver_points_won']})
+            output_list.append({'name': 'Average max points in a row',
+                                'data_p1': round(p1_data['sum_of_max_points_in_a_row']/matches, 1),
+                                'data_p2': round(p2_data['sum_of_max_points_in_a_row']/matches, 1)})
+            output_list.append({'name': 'Average biggest lead',
+                                'data_p1': round(p1_data['sum_of_biggest_leads']/matches, 1),
+                                'data_p2': round(p2_data['sum_of_biggest_leads']/matches, 1)})
     except:
-        output_list.append([{'name': 'Failed to retrieve statistics', 'data': ''}])
+        print(f'Failed to retrieve data for {player_1_id} and {player_2_id}.')
+
+    # If we retrieved data, but there were no matches, provide an empty set.
+    if len(output_list) == 0:
+        output_list.append({'name': '', 'data_p1': '', 'data_p2': ''})
 
     return output_list
 

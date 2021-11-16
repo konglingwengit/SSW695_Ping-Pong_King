@@ -22,19 +22,6 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
 </table>
 <button type="button" (click)="getPredictions();">Predict</button>
 
-<!-- <div *ngIf="statistic[0].title != ''">
-<table>
-<tr *ngFor="let prediction of statistic">
-<td>{{prediction.title}}</td>
-<td>{{prediction.line1}}</td>
-<td>{{prediction.line2}}</td>
-<td>{{prediction.line3}}</td>
-</tr>
-</table>
-<br>
-</div> -->
-
-<!-- Begin Services Row 1 -->
 <div class="row services-row services-row-head services-row-1" style="margin-top:20px" *ngIf="statistic.length > 0">
   <ng-container  *ngFor="let prediction of statistic; let i = index">
   <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
@@ -44,59 +31,8 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
           <p class="services-body">{{prediction.line1}}</p>
           <p class="services-body">{{prediction.line2}}</p>
           <p class="services-body">{{prediction.line3}}</p>
-          <p class="services-more"><a href="a.html">Find Out More</a></p>
       </div>
   </div>
   <div *ngIf="i % 3 == 2" class="clearfix" style="margin-bottom:20px"></div>
   </ng-container>
 </div>
-
-  <!-- <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-      <div class="services-group wow animated zoomIn" data-wow-offset="40">
-
-          <h4 class="services-title">Moneyline</h4>
-          <p class="services-body">Asianyan.Arutyun      -105</p>
-          <p class="services-body">Sanfonov.Viadimir     -135</p>
-          <p class="services-more"><a href="b.html">Find Out More</a></p>
-      </div>
-  </div>
-
-  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-      <div class="services-group wow animated fadeInRight" data-wow-offset="40">
-
-          <h4 class="services-title">Total points</h4>
-          <p class="services-body">Asianyan.Arutyun      1</p>
-          <p class="services-body">Sanfonov.Viadimir     1</p>
-          <p class="services-more"><a href="c.html">Find Out More</a></p>
-      </div>
-  </div>
-</div> -->
-<!-- End Serivces Row 1 -->
-
-<!-- Begin Services Row 2 -->
-<!-- <div class="row services-row services-row-tail services-row-2">
-  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-      <div class="services-group wow animated fadeInLeft" data-wow-offset="40">
-
-          <h4 class="services-title">Exact Number of Games</h4>
-          <p class="services-more"><a href="d.html">Find Out More</a></p>
-      </div>
-  </div>
-
-  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-      <div class="services-group wow animated zoomIn" data-wow-offset="40">
-
-          <h4 class="services-title">3rd Game Winner</h4>
-          <p class="services-more"><a href="e.html">Find Out More</a></p>
-      </div>
-  </div>
-
-  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-      <div class="services-group wow animated fadeInRight" data-wow-offset="40">
-
-          <h4 class="services-title">Game Decided By Extra Points</h4>
-          <p class="services-more"><a href="f.html">Find Out More</a></p>
-      </div>
-  </div>
-</div> -->
-<!-- End Serivces Row 2 -->

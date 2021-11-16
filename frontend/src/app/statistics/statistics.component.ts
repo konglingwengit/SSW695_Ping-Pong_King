@@ -12,6 +12,7 @@ export class StatisticsComponent implements OnInit {
   filtered_players_p1: any = [{id: 1, name: "Fred"}]
   filtered_players_p2: any = [{id: 1, name: "Fred"}]
   statistic: any = [];
+  vs_statistic: any = [];
   firstInput: number = 0;
   secondInput: number = 0;
   myFilterP1: string = "";
@@ -72,13 +73,17 @@ export class StatisticsComponent implements OnInit {
   }
 
   getPlayerStatistics(p1: number): void {
+    this.vs_statistic = []
+    this.statistic = []
     this.webService.getIndividualStatistics(p1)
         .subscribe(statistic => this.statistic = statistic);
   }
 
   getVsStatistics(p1: number, p2: number): void {
+    this.vs_statistic = []
+    this.statistic = []
     this.webService.getMatchStatistics(p1, p2)
-        .subscribe(statistic => this.statistic = statistic);
+        .subscribe(statistic => this.vs_statistic = statistic);
   }
 
   getPlayerName(id: number): string {
