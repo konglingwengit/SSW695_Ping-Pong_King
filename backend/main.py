@@ -10,6 +10,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": ["https://ping-pong-king-666.uc.r.appspot.com"]}})
 # "http://localhost:4200",
+# "https://ping-pong-king-666.uc.r.appspot.com"
 
 @app.route('/')
 def hello():

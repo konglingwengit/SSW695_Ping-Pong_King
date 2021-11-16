@@ -24,8 +24,11 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
 </tr>
 <tr><td><button type="button" (click)="getVsStatistics(firstInput, secondInput);">Matchup Statistics</button></td></tr>
 </table>
+<br>
 
-<!-- Begin Services Row 1 -->
+<!-- Individual Player Statistics -->
+<div *ngIf="statistic.length > 0">
+
 <div class="row services-row services-row-head services-row-1" style="margin-top:20px" *ngIf="statistic.length > 0">
   <ng-container  *ngFor="let set of statistic; let i = index">
     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
@@ -40,4 +43,29 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
     </div>
   <div *ngIf="i % 3 == 2" class="clearfix" style="margin-bottom:20px"></div>
   </ng-container>
+</div>
+
+</div>
+
+<!-- Vs. Statistics -->
+<div *ngIf="vs_statistic.length > 0">
+
+<div *ngIf="vs_statistic[0].name.length > 0">
+<table>
+<tr>
+    <td>Matchup Statistic</td>
+    <td>{{getPlayerName(firstInput)}}</td>
+    <td>{{getPlayerName(secondInput)}}</td>
+</tr>
+<tr  *ngFor="let set of vs_statistic; let i = index">
+  <td>{{set.name}}</td>
+  <td>{{set.data_p1}}</td>
+  <td>{{set.data_p2}}</td>
+</tr>
+</table>
+</div>
+<div *ngIf="vs_statistic[0].name.length == 0">
+These players have no recorded games against each other.
+</div>
+
 </div>
