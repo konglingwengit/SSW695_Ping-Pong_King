@@ -11,7 +11,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider } from 'angularx-social-login';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
+import {MatTableModule} from '@angular/material/table'; 
+import {MatFormFieldModule} from '@angular/material/form-field'; 
+import {MatInputModule} from '@angular/material/input'; 
+import {MatSelectModule} from '@angular/material/select'; 
+import {MatButtonModule} from '@angular/material/button'; 
+import {MatProgressBarModule} from '@angular/material/progress-bar'; 
 
 @NgModule({
   declarations: [
@@ -24,7 +31,10 @@ import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider } from 
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    SocialLoginModule
+    SocialLoginModule,
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule,MatTableModule,MatFormFieldModule,MatInputModule,
+    MatSelectModule,MatButtonModule,MatProgressBarModule
   ],
   providers: [
     {

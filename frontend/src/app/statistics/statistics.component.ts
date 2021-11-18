@@ -17,13 +17,20 @@ export class StatisticsComponent implements OnInit {
   secondInput: number = 0;
   myFilterP1: string = "";
   myFilterP2: string = "";
+  loading: boolean = false;
+  barLoading: boolean = false;
+  displayedColumns: string[] = ['name', 'data'];
 
   constructor(private webService: WebService) {
   }
 
   getPlayers(): void {
+    this.barLoading = true;
     this.webService.getPlayers()
-      .subscribe(players => this.updatePlayers(players));
+      .subscribe(players => {
+        this.barLoading = false;
+        this.updatePlayers(players)
+      });
   }
 
   updatePlayers(input_players: any)
@@ -75,15 +82,23 @@ export class StatisticsComponent implements OnInit {
   getPlayerStatistics(p1: number): void {
     this.vs_statistic = []
     this.statistic = []
+    this.loading = true;
     this.webService.getIndividualStatistics(p1)
-        .subscribe(statistic => this.statistic = statistic);
+        .subscribe(statistic => {
+          this.loading = false;
+          this.statistic = statistic[0];
+        });
   }
 
   getVsStatistics(p1: number, p2: number): void {
     this.vs_statistic = []
     this.statistic = []
+    this.loading = true;
     this.webService.getMatchStatistics(p1, p2)
-        .subscribe(statistic => this.vs_statistic = statistic);
+        .subscribe(statistic => {
+          this.loading = false;
+          this.vs_statistic = statistic
+        });
   }
 
   getPlayerName(id: number): string {

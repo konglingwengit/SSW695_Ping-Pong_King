@@ -1,5 +1,46 @@
 <h2>Show Player Statistics</h2>
-<table>
+
+<div style="display: flex;justify-content: space-evenly;">
+  <div>
+      <p><mat-form-field appearance="outline">
+        <mat-label>First player filter</mat-label>
+        <input matInput name="p1filter" [(ngModel)]="myFilterP1" (ngModelChange)="filterPlayers()">
+      </mat-form-field></p>
+      <p>
+        <mat-form-field appearance="outline">
+        <mat-label>First player</mat-label>
+        <mat-select style="width: 85%;" name="first" id="first" [(ngModel)]="firstInput">
+          <mat-option value="{{player.id}}" *ngFor="let player of filtered_players_p1">
+            {{player.name}}
+          </mat-option>
+        </mat-select>  
+      </mat-form-field>
+      <mat-progress-bar *ngIf="barLoading" mode="indeterminate"></mat-progress-bar></p>
+      <p><button mat-raised-button color="primary" 
+        type="button" (click)="getPlayerStatistics(firstInput);">Player Statistics</button>
+      </p>  
+  </div>
+  <div>
+    <p><mat-form-field appearance="outline">
+      <mat-label>Second player filter</mat-label>
+      <input matInput name="p2filter" [(ngModel)]="myFilterP2" (ngModelChange)="filterPlayers()">
+    </mat-form-field></p>
+    <p><mat-form-field appearance="outline">
+      <mat-label>Second player</mat-label>
+      <mat-select style="width: 85%;" name="second" id="second" [(ngModel)]="secondInput">
+        <mat-option value="{{player.id}}" *ngFor="let player of filtered_players_p2">
+          {{player.name}}
+        </mat-option>
+      </mat-select>  
+    </mat-form-field>
+    <mat-progress-bar *ngIf="barLoading" mode="indeterminate"></mat-progress-bar></p>
+    <p><button mat-raised-button color="primary" 
+      type="button" (click)="getVsStatistics(firstInput, secondInput);">Matchup Statistics</button>
+    </p>
+  </div>
+</div>
+
+<!-- <table>
 <tr>
 <td width="500">
 First player filter: <input name="p1filter" [(ngModel)]="myFilterP1" (ngModelChange)="filterPlayers()"><br>
@@ -24,45 +65,73 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
 </tr>
 <tr><td><button type="button" (click)="getVsStatistics(firstInput, secondInput);">Matchup Statistics</button></td></tr>
 </table>
-<br>
-
+<br> -->
+<mat-spinner style="margin: 0 auto;" *ngIf="loading"></mat-spinner>
 <!-- Individual Player Statistics -->
 <div *ngIf="statistic.length > 0">
-
-<div class="row services-row services-row-head services-row-1" style="margin-top:20px" *ngIf="statistic.length > 0">
-  <ng-container  *ngFor="let set of statistic; let i = index">
-    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-    <div class="services-group" data-wow-offset="40">
-    <h4 class="services-title" *ngIf="i==0">{{getPlayerName(firstInput)}} Statistics</h4>
-    <h4 class="services-title" *ngIf="i==1">Matchup Statistics</h4>
-    <h4 class="services-title" *ngIf="i==2">{{getPlayerName(secondInput)}} Statistics</h4>
-    <ng-container  *ngFor="let element of set; let j = index">
-          <p class="services-body">{{element.name}}: {{element.data}}</p>
+  <h3>{{getPlayerName(firstInput)}} Statistics</h3>
+  <table mat-table style="text-align: left;margin: 20px auto;" [dataSource]="statistic" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+      <!-- <th mat-header-cell *matHeaderCellDef> No. </th> -->
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
-    </div>
-    </div>
-  <div *ngIf="i % 3 == 2" class="clearfix" style="margin-bottom:20px"></div>
-  </ng-container>
-</div>
-
+    <ng-container matColumnDef="data">
+      <!-- <th mat-header-cell *matHeaderCellDef> No. </th> -->
+      <td style="padding-left: 10px; font-weight: bold; color:blue;" color="warn" mat-cell *matCellDef="let element"> {{element.data}} </td>
+    </ng-container>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <!-- <div class="row services-row services-row-head services-row-1" style="margin-top:20px" *ngIf="statistic.length > 0">
+    <ng-container  *ngFor="let set of statistic; let i = index">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+      <div class="services-group" data-wow-offset="40">
+      <h4 class="services-title" *ngIf="i==0">{{getPlayerName(firstInput)}} Statistics</h4>
+      <h4 class="services-title" *ngIf="i==1">Matchup Statistics</h4>
+      <h4 class="services-title" *ngIf="i==2">{{getPlayerName(secondInput)}} Statistics</h4>
+      <ng-container  *ngFor="let element of set; let j = index">
+            <p class="services-body">{{element.name}}: {{element.data}}</p>
+      </ng-container>
+      </div>
+      </div>
+    <div *ngIf="i % 3 == 2" class="clearfix" style="margin-bottom:20px"></div>
+    </ng-container>
+  </div> -->
 </div>
 
 <!-- Vs. Statistics -->
 <div *ngIf="vs_statistic.length > 0">
 
 <div *ngIf="vs_statistic[0].name.length > 0">
-<table>
-<tr>
-    <td>Matchup Statistic</td>
-    <td>{{getPlayerName(firstInput)}}</td>
-    <td>{{getPlayerName(secondInput)}}</td>
-</tr>
-<tr  *ngFor="let set of vs_statistic; let i = index">
-  <td>{{set.name}}</td>
-  <td>{{set.data_p1}}</td>
-  <td>{{set.data_p2}}</td>
-</tr>
-</table>
+  <table style="text-align: left;margin: 20px auto;" class="mat-table" class="mat-elevation-z8">
+    <tr class="mat-header-row" style="height: 48px;">
+      <th class="mat-cell" style="padding-left: 24px;">Matchup Statistic</th>
+      <th class="mat-cell" style="padding:0px 20px;color:blue">{{getPlayerName(firstInput)}}</th>
+      <th class="mat-cell" style="padding-right: 24px;color:red">{{getPlayerName(secondInput)}}</th>
+    </tr>
+    <tr style="border-top: 1px solid #dfdfdf;height: 48px;" class="mat-row" *ngFor="let set of vs_statistic; let i = index">
+      <td class="mat-cell">
+        {{set.name}}
+      </td>
+      <td style="padding:0px 20px;font-weight: bold;color: blue;" class="mat-cell">
+        {{set.data_p1}}
+      </td>
+      <td style="font-weight: bold;color: red;" class="mat-cell">
+        {{set.data_p2}}
+      </td>
+    </tr>
+  </table>
+  <!-- <table>
+  <tr>
+      <td>Matchup Statistic</td>
+      <td>{{getPlayerName(firstInput)}}</td>
+      <td>{{getPlayerName(secondInput)}}</td>
+  </tr>
+  <tr  *ngFor="let set of vs_statistic; let i = index">
+    <td>{{set.name}}</td>
+    <td>{{set.data_p1}}</td>
+    <td>{{set.data_p2}}</td>
+  </tr>
+  </table> -->
 </div>
 <div *ngIf="vs_statistic[0].name.length == 0">
 These players have no recorded games against each other.

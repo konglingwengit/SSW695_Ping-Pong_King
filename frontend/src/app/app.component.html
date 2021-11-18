@@ -98,6 +98,11 @@ margin-top: 0px;
 
 <!-- Begin #services-section -->
 <section id="services" class="services-section section-global-wrapper">
+    <!-- <div class="container">
+    <div class="sea-container">
+        <app-statistics></app-statistics>
+    </div>
+    </div> -->
     <div class="container" *ngIf="isLoggedin === true">
         <div class="row">
             <!--<div class="services-header"><h3 class="services-header-title">Ping Pong King</h3></div>-->
@@ -118,10 +123,10 @@ margin-top: 0px;
         <!-- <h2 class="text-center mb-5">Login with Google</h2> -->
         <div *ngIf="isLoggedin === false && loading === false">
             <div>
-                <button type="button" (click)="loginWithGoogle()" class="btn btn-success">Login with Google</button>
+                <button mat-stroked-button color="primary" type="button" (click)="loginWithGoogle()">Login with Google</button>
             </div>
         </div>
-        <div class="loader" *ngIf="loading"></div>
+        <mat-spinner style="margin: 0 auto;" *ngIf="loading"></mat-spinner>
         <!-- <div *ngIf="isLoggedin === true">
           <div class="form-group">
             <label>First Name</label>
