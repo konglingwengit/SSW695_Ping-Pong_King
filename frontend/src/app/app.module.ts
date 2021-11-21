@@ -19,6 +19,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatButtonModule} from '@angular/material/button'; 
 import {MatProgressBarModule} from '@angular/material/progress-bar'; 
+import {MatCardModule} from '@angular/material/card'; 
+import {MatGridListModule} from '@angular/material/grid-list'; 
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     SocialLoginModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,MatTableModule,MatFormFieldModule,MatInputModule,
-    MatSelectModule,MatButtonModule,MatProgressBarModule
+    MatSelectModule,MatButtonModule,MatProgressBarModule,MatCardModule,
+    MatGridListModule
   ],
   providers: [
     {

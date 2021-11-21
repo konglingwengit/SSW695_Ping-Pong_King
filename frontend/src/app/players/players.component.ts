@@ -23,13 +23,19 @@ export class PlayersComponent implements OnInit {
   secondInput: number = 0;
   myFilterP1: string = "";
   myFilterP2: string = "";
+  loading: boolean = false;
+  barLoading: boolean = false;
 
   constructor(private webService: WebService) {
   }
 
   getPlayers(): void {
+    this.barLoading = true;
     this.webService.getPlayers()
-      .subscribe(players => this.updatePlayers(players));
+      .subscribe(players => {
+        this.barLoading = false;
+        this.updatePlayers(players)
+      });
   }
 
   updatePlayers(input_players: any)
@@ -81,8 +87,12 @@ export class PlayersComponent implements OnInit {
   }
 
   getPredictions(): void {
+    this.loading = true;
     this.webService.getPredictions(this.firstInput, this.secondInput, "ALL")
-        .subscribe(statistic => this.statistic = statistic);
+        .subscribe(statistic => {
+          this.loading = false;
+          this.statistic = statistic
+        });
   }
 
   getPlayerName(id: number): string {

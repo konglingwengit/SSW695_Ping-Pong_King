@@ -1,5 +1,43 @@
 <h2>Choose two players</h2>
-<table>
+
+<div style="display: flex;justify-content: space-evenly;">
+  <div>
+      <p><mat-form-field appearance="outline">
+        <mat-label>First player filter</mat-label>
+        <input matInput name="p1filter" [(ngModel)]="myFilterP1" (ngModelChange)="filterPlayers()">
+      </mat-form-field></p>
+      <p>
+        <mat-form-field appearance="outline">
+        <mat-label>First player</mat-label>
+        <mat-select style="width: 85%;" name="first" id="first" [(ngModel)]="firstInput">
+          <mat-option value="{{player.id}}" *ngFor="let player of filtered_players_p1">
+            {{player.name}}
+          </mat-option>
+        </mat-select>  
+      </mat-form-field>
+      <mat-progress-bar *ngIf="barLoading" mode="indeterminate"></mat-progress-bar></p>
+  </div>
+  <div>
+    <p><mat-form-field appearance="outline">
+      <mat-label>Second player filter</mat-label>
+      <input matInput name="p2filter" [(ngModel)]="myFilterP2" (ngModelChange)="filterPlayers()">
+    </mat-form-field></p>
+    <p><mat-form-field appearance="outline">
+      <mat-label>Second player</mat-label>
+      <mat-select style="width: 85%;" name="second" id="second" [(ngModel)]="secondInput">
+        <mat-option value="{{player.id}}" *ngFor="let player of filtered_players_p2">
+          {{player.name}}
+        </mat-option>
+      </mat-select>  
+    </mat-form-field>
+    <mat-progress-bar *ngIf="barLoading" mode="indeterminate"></mat-progress-bar></p>
+  </div>
+</div>
+<p><button mat-raised-button color="primary" 
+  type="button" (click)="getPredictions();">Predict</button>
+</p>
+
+<!-- <table>
 <tr>
 <td width="500">
 First player filter: <input name="p1filter" [(ngModel)]="myFilterP1" (ngModelChange)="filterPlayers()"><br>
@@ -20,13 +58,32 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
 </td>
 </tr>
 </table>
-<button type="button" (click)="getPredictions();">Predict</button>
+<button type="button" (click)="getPredictions();">Predict</button> -->
+<mat-spinner style="margin: 40px auto;" *ngIf="loading"></mat-spinner>
 
+<mat-grid-list cols="3" rowHeight="4:2"  *ngIf="statistic.length > 0">
+  <mat-grid-tile *ngFor="let prediction of statistic; let i = index">
+    <mat-card class="result-card">
+      <mat-card-title class="result-card-title">{{prediction.title}}</mat-card-title>
+      <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
+      <mat-card-content class="result-card-content">
+        <p>{{prediction.line1}}</p>
+        <p>{{prediction.line2}}</p>
+        <p>{{prediction.line3}}</p>
+      </mat-card-content>
+      <!-- <mat-card-actions>
+        <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button>
+      </mat-card-actions> -->
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<!-- 
 <div class="row services-row services-row-head services-row-1" style="margin-top:20px" *ngIf="statistic.length > 0">
   <ng-container  *ngFor="let prediction of statistic; let i = index">
   <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
      <div class="services-group" data-wow-offset="40">
-        <!--  <img src="assets/ico/live.png" height="60" alt="">-->
           <h4 class="services-title">{{prediction.title}}</h4>
           <p class="services-body">{{prediction.line1}}</p>
           <p class="services-body">{{prediction.line2}}</p>
@@ -35,4 +92,4 @@ Second player: <select name="second" id="second" [(ngModel)]="secondInput">
   </div>
   <div *ngIf="i % 3 == 2" class="clearfix" style="margin-bottom:20px"></div>
   </ng-container>
-</div>
+</div> -->
