@@ -9,7 +9,7 @@ steps:
   args: ["install", "-r", "backend/requirements.txt", "--user"]
 - name: python
   entrypoint: python
-  args: ["-m", "pytest", "--junitxml=${SHORT_SHA}_test_log.xml"]   
+  args: ["-m", "pytest", "backend/", "--junitxml=${SHORT_SHA}_test_log.xml"]   
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us.gcr.io/$PROJECT_ID/angular-nginx-container', 'frontend/nginx-hosting']
 - name: "gcr.io/cloud-builders/gcloud"
