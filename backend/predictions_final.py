@@ -95,7 +95,7 @@ def prediction_who_win(playerA_ID, playerB_ID):
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
-    if (table_a.count == 0 or table_b.count == 0):
+    if len(table_a) == 0 or len(table_b) == 0:
         msg = "Invalid Player"
         return msg
     tmp_ab = pd.DataFrame()
@@ -145,7 +145,7 @@ def prediction_exact(playerA_ID, playerB_ID):
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
-    if (table_a.count == 0 or table_b.count == 0):
+    if len(table_a) == 0 or len(table_b) == 0:
         msg = "Invalid Player"
         return msg
     tmp_ab = pd.DataFrame()
@@ -192,7 +192,7 @@ def prediction_first_winner(playerA_ID, playerB_ID):
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
-    if (table_a.count == 0 or table_b.count == 0):
+    if len(table_a) == 0 or len(table_b) == 0:
         msg = "Invalid Player"
         return msg
     tmp_ab = pd.DataFrame()
@@ -242,7 +242,7 @@ def prediction_extra_point(playerA_ID, playerB_ID):
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
-    if (table_a.count == 0 or table_b.count == 0):
+    if len(table_a) == 0 or len(table_b) == 0:
         msg = "Invalid Player"
         return msg
     tmp_ab = pd.DataFrame()
@@ -288,7 +288,7 @@ def prediction_total_points(playerA_ID, playerB_ID):
     table_a = df_player[(df_player['playerID'] == playerA_ID)]
     table_b = df_player[(df_player['playerID'] == playerB_ID)]
     # if can't find player info
-    if (table_a.count == 0 or table_b.count == 0):
+    if len(table_a) == 0 or len(table_b) == 0:
         msg = "Invalid Player"
         return msg
 
@@ -326,17 +326,3 @@ def prediction_total_points(playerA_ID, playerB_ID):
     pred_ab = log_model_total_points.predict(pred_df)
 
     return pred_ab[0]
-
-
-def prediction_all(playerA_ID, playerB_ID):
-    res = [prediction_who_win(playerA_ID, playerB_ID),
-           prediction_exact(playerA_ID, playerB_ID),
-           prediction_total_points(playerA_ID, playerB_ID),
-           prediction_first_winner(playerA_ID, playerB_ID),
-           prediction_extra_point(playerA_ID, playerB_ID)]
-    return res
-
-
-if __name__ == '__main__':
-    initialize_predictions()
-    prediction_all(345226, 345227)
