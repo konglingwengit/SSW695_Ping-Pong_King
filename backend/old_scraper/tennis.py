@@ -91,3 +91,47 @@ def fetch_tournament(tournament_id, start_page, end_page):
             time.sleep(5)
         else:
             break
+
+
+def get_name(player_id: int):
+    url = 'https://api.sofascore.com/api/v1/team/' + str(player_id) + '/events/last/0'
+    r = requests.Session()
+    data = json.loads(r.get(url, headers=head).text)
+    if int(data['events'][0]['homeTeam']['id']) == player_id:
+        name = data['events'][0]['homeTeam']['name']
+    elif int(data['events'][0]['awayTeam']['id']) == player_id:
+        name = data['events'][0]['awayTeam']['name']
+    print(f'Adding {player_id}: {name}')
+    return name
+
+
+def restore_players():
+    global client
+    if client is None:
+        client = datastore.Client()
+    event_kind = 'Event_Data'
+    player_kind = 'Player'
+    query = client.query(kind=event_kind)
+    print('Fetching event data')
+    event_list = list(query.fetch())
+    ecnt = 0
+    for event in event_list:
+        ecnt += 1
+        if ecnt % 50 == 0:
+            print(f'Event {ecnt} of {len(event_list)}')
+        new_player = datastore.entity.Entity()
+        new_player.key = client.key(player_kind, int(event['awayTeam']))
+        found = client.get(new_player.key)
+        if found is None:
+            new_player['name'] = get_name(new_player.key.id)
+            client.put(new_player)
+        new_player = datastore.entity.Entity()
+        new_player.key = client.key(player_kind, int(event['homeTeam']))
+        found = client.get(new_player.key)
+        if found is None:
+            new_player['name'] = get_name(new_player.key.id)
+            client.put(new_player)
+
+
+if __name__ == '__main__':
+    restore_players()

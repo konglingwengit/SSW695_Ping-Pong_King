@@ -1,6 +1,9 @@
 <!-- Header -->
-<div style="text-align: right;font-size: 12px;" *ngIf="isLoggedin === true">
+<div style="text-align: right;font-size: 12px;" *ngIf="isAuthorized === true">
     <span>Welcome {{socialUser.name}}</span>
+</div>
+<div style="text-align: right;font-size: 12px;" *ngIf="isAuthorized === false && isLoggedin === true">
+    <span>Sorry, {{socialUser.name}}, you are not authorized on this site</span>
 </div>
 
 <nav id="navbar-section" class="navbar navbar-default navbar-static-top navbar-sticky" role="navigation">
@@ -98,7 +101,7 @@ margin-top: 0px;
 
 <!-- Begin #services-section -->
 <section id="services" class="services-section section-global-wrapper">
-    <div class="container" *ngIf="isLoggedin === true">
+    <div class="container" *ngIf="isAuthorized === true">
         <div class="row">
             <!--<div class="services-header"><h3 class="services-header-title">Ping Pong King</h3></div>-->
         </div>
@@ -122,7 +125,7 @@ margin-top: 0px;
             </div>
         </div>
         <mat-spinner style="margin: 0 auto;" *ngIf="loading"></mat-spinner>
-        <!-- <div *ngIf="isLoggedin === true">
+        <!-- <div *ngIf="isAuthorized === true">
           <div class="form-group">
             <label>First Name</label>
             <input type="text" class="form-control" [value]="socialUser.firstName" id="firstname" readonly>

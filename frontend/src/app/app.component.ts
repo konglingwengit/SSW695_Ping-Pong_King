@@ -15,7 +15,8 @@ export class AppComponent implements OnInit {
 
   loginForm: FormGroup;
   socialUser: SocialUser;
-  isLoggedin: boolean = false;  
+  isLoggedin: boolean = false;
+  isAuthorized: boolean = false;
   loading: boolean = false;
   statisticsActive: boolean = false;
   predictionsActive: boolean = true;
@@ -37,16 +38,24 @@ export class AppComponent implements OnInit {
         this.socialUser = user;
         //console.log(this.socialUser);
         this.loading = true;
-        this.playerService.addUser(user.email)
+        this.playerService.checkUser(user.email)
           .subscribe(res => {
             this.loading = false;
-            // this.isLoggedin = (user != null);
             this.isLoggedin = true;
-            // console.log('res',res);
+            if(String(res) == 'User authorized - ' + this.socialUser.email)
+            {
+              this.isAuthorized = true;
+            }
+            else
+            {
+              this.isAuthorized = false;
+            }
+            //console.log('res',res);
           });
       }
       else{
         this.isLoggedin = false;
+        this.isAuthorized = false;
       }
     });
   }

@@ -14,14 +14,14 @@ export class PlayerService {
 
   private playersUrl = environment.webapiurl + '/players';  // URL to web api
   private statisticUrl = environment.webapiurl + '/predictions';  // URL to web api
-  private addUserUrl = environment.webapiurl + '/user';
+  private addUserUrl = environment.webapiurl + '/user/';
 
   /** GET players from the server */
   getPlayers(): Observable<any []> {
     return this.http.get<any []>(this.playersUrl)
   }
 
-  addUser(email:string): Observable<any []> {
+  checkUser(email:string): Observable<any []> {
     const postOptions = {
       headers: new HttpHeaders({
         // 'Host': environment.dev_url_prefix + '/',
