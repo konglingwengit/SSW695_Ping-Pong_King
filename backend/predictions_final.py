@@ -8,6 +8,7 @@ from sklearn import linear_model
 import math
 from google.cloud import datastore
 import pickle
+import pathlib
 
 df_player = None
 log_model_who_win = None
@@ -33,15 +34,17 @@ def initialize_data_from_machine_models():
     global log_model_exact
     global log_model_first_winner
     global log_model_extra_point
-    with open('./data/log_model_who_win.pickle', 'rb') as f:
+    parent_dir = pathlib.Path(__file__).parent
+
+    with open(parent_dir / 'data' / 'log_model_who_win.pickle', 'rb') as f:
         log_model_who_win = pickle.load(f)
-    with open('./data/log_model_exact.pickle', 'rb') as f:
+    with open(parent_dir / 'data' / 'log_model_exact.pickle', 'rb') as f:
         log_model_exact = pickle.load(f)
-    with open('./data/log_model_first_winner.pickle', 'rb') as f:
+    with open(parent_dir / 'data' / 'log_model_first_winner.pickle', 'rb') as f:
         log_model_first_winner = pickle.load(f)
-    with open('./data/log_model_extra_point.pickle', 'rb') as f:
+    with open(parent_dir / 'data' / 'log_model_extra_point.pickle', 'rb') as f:
         log_model_extra_point = pickle.load(f)
-    with open('./data/log_model_total_points.pickle', 'rb') as f:
+    with open(parent_dir / 'data' / 'log_model_total_points.pickle', 'rb') as f:
         log_model_total_points = pickle.load(f)
 
 
