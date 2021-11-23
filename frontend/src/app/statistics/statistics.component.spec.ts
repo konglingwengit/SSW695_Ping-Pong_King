@@ -1,25 +1,31 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { StatisticsComponent } from './statistics.component';
 
 describe('StatisticsComponent', () => {
   let component: StatisticsComponent;
-  let fixture: ComponentFixture<StatisticsComponent>;
+  //let fixture: ComponentFixture<StatisticsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ StatisticsComponent ]
-    })
-    .compileComponents();
-  });
+  beforeEach(() => 
+    TestBed.configureTestingModule({
+      imports: [ HttpClientTestingModule ],
+      providers: [StatisticsComponent]
+    }));
 
-  beforeEach(() => {
+  /*beforeEach(() => {
     fixture = TestBed.createComponent(StatisticsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });*/
+
+  it('should create', () => {
+    const component: StatisticsComponent = TestBed.get(StatisticsComponent);
+    expect(component).toBeTruthy();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    const component: StatisticsComponent = TestBed.get(StatisticsComponent);
+    expect(component.getPlayerName(1)).toEqual("Fred");
   });
+  
 });
