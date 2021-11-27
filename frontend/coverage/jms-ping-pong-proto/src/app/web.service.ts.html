@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.28% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.69% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -110,32 +110,32 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -150,33 +150,33 @@ import { Observable, of } from 'rxjs';
 })
 export class WebService {
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(</span>
-    private <span class="cstat-no" title="statement not covered" >http: HttpClient)</span> { }
+  constructor(
+    private http: HttpClient) { }
 &nbsp;
-  private <span class="cstat-no" title="statement not covered" >playersUrl = environment.webapiurl + '/players'; </span> // URL to web api
-  private <span class="cstat-no" title="statement not covered" >predictionUrl = environment.webapiurl + '/predictions'; </span> // URL to web api
-  private <span class="cstat-no" title="statement not covered" >singlePlayerStatsUrl = environment.webapiurl + '/single_player_stats'; </span> // URL to web api
-  private <span class="cstat-no" title="statement not covered" >matchStatsUrl = environment.webapiurl + '/vs_stats'; </span> // URL to web api
+  private playersUrl = environment.webapiurl + '/players';  // URL to web api
+  private predictionUrl = environment.webapiurl + '/predictions';  // URL to web api
+  private singlePlayerStatsUrl = environment.webapiurl + '/single_player_stats';  // URL to web api
+  private matchStatsUrl = environment.webapiurl + '/vs_stats';  // URL to web api
 &nbsp;
 &nbsp;
   /** GET players from the server */
-<span class="fstat-no" title="function not covered" >  getPlayers(</span>): Observable&lt;any []&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.get&lt;any []&gt;(this.playersUrl)</span>
+  getPlayers(): Observable&lt;any []&gt; {
+    return this.http.get&lt;any []&gt;(this.playersUrl)
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  getPredictions(</span>first_id: number, second_id: number, prediction: string): Observable&lt;any&gt; {
-    var requestUrl = <span class="cstat-no" title="statement not covered" >this.predictionUrl + '?prediction=' + prediction + '&amp;p1=' + first_id + '&amp;p2=' + second_id;</span>
-<span class="cstat-no" title="statement not covered" >    return this.http.get&lt;any&gt;(requestUrl)</span>
+  getPredictions(first_id: number, second_id: number, prediction: string): Observable&lt;any&gt; {
+    var requestUrl = this.predictionUrl + '?prediction=' + prediction + '&amp;p1=' + first_id + '&amp;p2=' + second_id;
+    return this.http.get&lt;any&gt;(requestUrl)
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  getIndividualStatistics(</span>first_id: number): Observable&lt;any&gt; {
-    var requestUrl = <span class="cstat-no" title="statement not covered" >this.singlePlayerStatsUrl + '?p1=' + first_id</span>
-<span class="cstat-no" title="statement not covered" >    return this.http.get&lt;any&gt;(requestUrl)</span>
+  getIndividualStatistics(first_id: number): Observable&lt;any&gt; {
+    var requestUrl = this.singlePlayerStatsUrl + '?p1=' + first_id
+    return this.http.get&lt;any&gt;(requestUrl)
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  getMatchStatistics(</span>first_id: number, second_id: number): Observable&lt;any&gt; {
-    var requestUrl = <span class="cstat-no" title="statement not covered" >this.matchStatsUrl + '?p1=' + first_id + '&amp;p2=' + second_id;</span>
-<span class="cstat-no" title="statement not covered" >    return this.http.get&lt;any&gt;(requestUrl)</span>
+  getMatchStatistics(first_id: number, second_id: number): Observable&lt;any&gt; {
+    var requestUrl = this.matchStatsUrl + '?p1=' + first_id + '&amp;p2=' + second_id;
+    return this.http.get&lt;any&gt;(requestUrl)
   }
 &nbsp;
 }
@@ -187,7 +187,7 @@ export class WebService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Nov 20 2021 19:10:17 GMT-0600 (Central Standard Time)
+                at Sat Nov 27 2021 01:21:33 GMT-0600 (Central Standard Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

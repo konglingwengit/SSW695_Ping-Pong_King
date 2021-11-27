@@ -7,39 +7,38 @@ import { AppComponent } from './app.component';
 import { AppModule } from './app.module';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [ HttpClientTestingModule ,ReactiveFormsModule],
-    providers: [AppComponent,SocialAuthService,GoogleLoginProvider,SocialUser]
-  }));
+  let authSpy: jasmine.Spy;
+  let googleLoginProviderSpy: jasmine.Spy;
+
+  beforeEach(() =>
+  {
+    authSpy = jasmine.createSpyObj('SocialAuthService', ['authState', 'signIn', 'signOut']);
+    googleLoginProviderSpy = jasmine.createSpyObj('GoogleLoginProvider', ['PROVIDER_ID']);
+    TestBed.configureTestingModule(
+    {
+      imports: [ HttpClientTestingModule ,ReactiveFormsModule],
+      providers: [AppComponent,{provide: SocialAuthService, useValue: authSpy},{provide: GoogleLoginProvider, useValue: googleLoginProviderSpy},SocialUser]
+    });
+  }
+  );
 
   it('should create the app', () => {
     const component: AppComponent = TestBed.get(AppComponent);
     expect(component).toBeTruthy();
   });
 
-  it('should create the app', () => {
+  it('Switch to statistics', () => {
     const component: AppComponent = TestBed.get(AppComponent);
     component.activateStatistics();
     expect(component.predictionsActive).toEqual(false);
     expect(component.statisticsActive).toEqual(true);
   });
   
-  it('should create the app', () => {
+  it('Switch to predictions', () => {
     const component: AppComponent = TestBed.get(AppComponent);
     component.activatePredictions();
     expect(component.predictionsActive).toEqual(true);
     expect(component.statisticsActive).toEqual(false);
   });  
 
-/*  it(`should have as title 'jms-ping-pong-proto'`, () => {
-    const component: AppComponent = TestBed.get(AppComponent);
-    expect(component.title).toContain('Ping Pong King');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('jms-ping-pong-proto app is running!');
-  });*/
 });
